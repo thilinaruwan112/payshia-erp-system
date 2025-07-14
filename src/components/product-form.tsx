@@ -41,6 +41,7 @@ const productFormSchema = z.object({
     message: "Product name must be at least 3 characters.",
   }),
   description: z.string().optional(),
+  stockUnit: z.string().optional(),
   status: z.enum(["active", "draft"]),
   category: z.string().min(1, { message: "Please select a category." }),
   sellingPrice: z.coerce.number().min(0, { message: "Selling Price must be a positive number." }),
@@ -64,6 +65,7 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 const defaultValues: Partial<ProductFormValues> = {
   name: "",
   description: "",
+  stockUnit: "Nos",
   status: "active",
   sellingPrice: 0,
   variants: [{ sku: "", color: "", size: "" }],
@@ -139,6 +141,30 @@ export function ProductForm() {
                                         {...field}
                                     />
                                 </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="stockUnit"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Stock Unit</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a unit" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Nos">Nos (Numbers)</SelectItem>
+                                        <SelectItem value="KG">KG (Kilogram)</SelectItem>
+                                        <SelectItem value="Gram">Gram</SelectItem>
+                                        <SelectItem value="Litre">Litre</SelectItem>
+                                        <SelectItem value="ml">ml (Millilitre)</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                                 </FormItem>
                             )}
