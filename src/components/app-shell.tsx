@@ -42,6 +42,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import React from 'react';
+import { ThemeToggle } from './theme-toggle';
 
 const user = {
   name: 'Admin User',
@@ -203,11 +204,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset className="flex flex-col">
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
-          <SidebarTrigger className="md:hidden" />
-          <div className="hidden md:block">
-            <Brand />
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="md:hidden" />
+            <div className="hidden md:block">
+                <Brand />
+            </div>
           </div>
-          <UserMenu />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <UserMenu />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
