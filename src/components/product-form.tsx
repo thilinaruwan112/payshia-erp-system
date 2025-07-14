@@ -40,6 +40,10 @@ const productFormSchema = z.object({
   name: z.string().min(3, {
     message: "Product name must be at least 3 characters.",
   }),
+  printName: z.string().optional(),
+  tamilName: z.string().optional(),
+  sinhalaName: z.string().optional(),
+  displayName: z.string().optional(),
   description: z.string().optional(),
   stockUnit: z.string().optional(),
   status: z.enum(["active", "draft"]),
@@ -64,6 +68,10 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 
 const defaultValues: Partial<ProductFormValues> = {
   name: "",
+  printName: "",
+  tamilName: "",
+  sinhalaName: "",
+  displayName: "",
   description: "",
   stockUnit: "Nos",
   status: "active",
@@ -120,9 +128,61 @@ export function ProductForm() {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Product name</FormLabel>
+                                <FormLabel>Product Name</FormLabel>
                                 <FormControl>
                                     <Input placeholder="e.g. Classic T-Shirt" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="displayName"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Display Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g. Classic T-Shirt (Unisex)" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="printName"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Print Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Name for printing on labels/receipts" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="tamilName"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Tamil Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Product name in Tamil" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="sinhalaName"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Sinhala Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Product name in Sinhala" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>

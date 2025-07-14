@@ -1,7 +1,6 @@
 'use server';
 
-import { run } from '@genkit-ai/next/server';
-import { logisticsFlow, logisticsQuerySchema } from '@/ai/flows/logistics';
+import { suggestVendor, LogisticsQuerySchema } from '@/ai/flows/logistics';
 import { z } from 'zod';
 
 type FormState = {
@@ -19,7 +18,7 @@ export async function getLogisticsSuggestion(
     urgency: formData.get('urgency'),
   };
 
-  const parsed = logisticsQuerySchema.safeParse(rawData);
+  const parsed = LogisticsQuerySchema.safeParse(rawData);
 
   if (!parsed.success) {
     const errorMessages = parsed.error.errors.map(e => e.message).join(', ');
@@ -27,7 +26,7 @@ export async function getLogisticsSuggestion(
   }
 
   try {
-    const suggestion = await run(logisticsFlow, parsed.data);
+    const suggestion = await suggestVendor(parsed.data);
     return { suggestion, error: '' };
   } catch (e) {
     console.error(e);

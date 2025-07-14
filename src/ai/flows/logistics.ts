@@ -1,8 +1,16 @@
+
+'use server';
+/**
+ * @fileOverview A logistics assistant AI flow.
+ *
+ * - suggestVendor - A function that suggests a shipping vendor based on order details.
+ * - LogisticsQuerySchema - The input schema for the vendor suggestion flow.
+ */
+
 import {ai} from '@/ai/genkit';
-import {defineFlow} from 'genkit/flow';
 import {z} from 'zod';
 
-export const logisticsQuerySchema = z.object({
+export const LogisticsQuerySchema = z.object({
   packageDetails: z
     .string()
     .min(3, 'Package details must be at least 3 characters.')
@@ -14,10 +22,12 @@ export const logisticsQuerySchema = z.object({
   urgency: z.string().describe('How urgent the shipment is (e.g., standard, express)'),
 });
 
-export const logisticsFlow = defineFlow(
+export type LogisticsQuery = z.infer<typeof LogisticsQuerySchema>;
+
+const logisticsFlow = ai.defineFlow(
   {
     name: 'logisticsFlow',
-    inputSchema: logisticsQuerySchema,
+    inputSchema: LogisticsQuerySchema,
     outputSchema: z.string(),
   },
   async (query) => {
@@ -34,11 +44,15 @@ export const logisticsFlow = defineFlow(
       Start your response with a <h4> tag for the suggested vendor.
     `;
 
-    const llmResponse = await ai.generateText({
+    const {text} = await ai.generate({
       prompt,
       model: 'googleai/gemini-2.0-flash',
     });
 
-    return llmResponse;
+    return text;
   }
 );
+
+export async function suggestVendor(query: LogisticsQuery): Promise<string> {
+  return await logisticsFlow(query);
+}
