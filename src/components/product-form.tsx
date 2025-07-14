@@ -1,0 +1,356 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { collections, products } from "@/lib/data";
+import { Trash2, UploadCloud } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+
+const productFormSchema = z.object({
+  name: z.string().min(3, {
+    message: "Product name must be at least 3 characters.",
+  }),
+  description: z.string().optional(),
+  status: z.enum(["active", "draft"]),
+  category: z.string().min(1, { message: "Please select a category." }),
+  price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
+  variants: z.array(
+    z.object({
+      sku: z.string().min(1, { message: "SKU is required." }),
+      color: z.string().optional(),
+      size: z.string().optional(),
+    })
+  ).min(1, { message: "At least one variant is required." }),
+  collections: z.array(z.string()).optional(),
+});
+
+type ProductFormValues = z.infer<typeof productFormSchema>;
+
+const defaultValues: Partial<ProductFormValues> = {
+  name: "",
+  description: "",
+  status: "active",
+  price: 0,
+  variants: [{ sku: "", color: "", size: "" }],
+  collections: [],
+};
+
+export function ProductForm() {
+  const router = useRouter();
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
+    defaultValues,
+    mode: "onChange",
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    name: "variants",
+    control: form.control,
+  });
+  
+  const existingCategories = [...new Set(products.map(p => p.category))];
+
+  function onSubmit(data: ProductFormValues) {
+    console.log(data);
+    toast({
+      title: "Product Created",
+      description: "The new product has been saved successfully.",
+    });
+    router.push('/products');
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold tracking-tight">Create Product</h1>
+            <div className="flex items-center gap-2">
+                <Button variant="outline" type="button" onClick={() => router.back()}>Cancel</Button>
+                <Button type="submit">Save Product</Button>
+            </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Product Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Product name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="e.g. Classic T-Shirt" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Tell your customers about this great product."
+                                        className="resize-none"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Media</CardTitle>
+                        <CardDescription>Add images for your product.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                         <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-12 text-center">
+                            <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
+                            <p className="mt-4 text-sm text-muted-foreground">Drag and drop images here, or click to browse.</p>
+                            <Button variant="outline" className="mt-4">Browse</Button>
+                         </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Pricing</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <FormField
+                            control={form.control}
+                            name="price"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Price</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Variants</CardTitle>
+                        <CardDescription>Add variants like size or color.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {fields.map((field, index) => (
+                           <div key={field.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end border p-4 rounded-md mb-4 relative">
+                                <FormField
+                                    control={form.control}
+                                    name={`variants.${index}.sku`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>SKU</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="TS-BLK-S" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name={`variants.${index}.color`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>Color</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Black" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name={`variants.${index}.size`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                        <FormLabel>Size</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="S" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                               {fields.length > 1 && (
+                                <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-muted-foreground hover:text-destructive" onClick={() => remove(index)}>
+                                    <Trash2 className="h-4 w-4" />
+                                    <span className="sr-only">Remove variant</span>
+                                </Button>
+                               )}
+                           </div>
+                        ))}
+                         <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => append({ sku: "", color: "", size: "" })}
+                        >
+                            Add another variant
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="space-y-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Product status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <FormField
+                            control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                        <SelectValue placeholder="Select a status" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="draft">Draft</SelectItem>
+                                    </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Product organization</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="category"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Category</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                        <SelectValue placeholder="Select a category" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {existingCategories.map(cat => (
+                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                    </Select>
+                                    <FormDescription>
+                                        You can manage categories in your product settings.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="collections"
+                            render={() => (
+                                <FormItem>
+                                    <div className="mb-4">
+                                        <FormLabel>Collections</FormLabel>
+                                        <FormDescription>
+                                            Add this product to a collection.
+                                        </FormDescription>
+                                    </div>
+                                    {collections.map((item) => (
+                                        <FormField
+                                        key={item.id}
+                                        control={form.control}
+                                        name="collections"
+                                        render={({ field }) => {
+                                            return (
+                                            <FormItem
+                                                key={item.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                            >
+                                                <FormControl>
+                                                <Checkbox
+                                                    checked={field.value?.includes(item.id)}
+                                                    onCheckedChange={(checked) => {
+                                                    return checked
+                                                        ? field.onChange([...(field.value || []), item.id])
+                                                        : field.onChange(
+                                                            field.value?.filter(
+                                                            (value) => value !== item.id
+                                                            )
+                                                        )
+                                                    }}
+                                                />
+                                                </FormControl>
+                                                <FormLabel className="font-normal">
+                                                {item.title}
+                                                </FormLabel>
+                                            </FormItem>
+                                            )
+                                        }}
+                                        />
+                                    ))}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                            />
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+      </form>
+    </Form>
+  );
+}

@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   return (
@@ -36,9 +37,11 @@ export default function ProductsPage() {
             Manage your products and their variants.
           </p>
         </div>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Product
+        <Button asChild>
+          <Link href="/products/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Create Product
+          </Link>
         </Button>
       </div>
 
