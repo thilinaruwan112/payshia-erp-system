@@ -43,7 +43,12 @@ const productFormSchema = z.object({
   description: z.string().optional(),
   status: z.enum(["active", "draft"]),
   category: z.string().min(1, { message: "Please select a category." }),
-  price: z.coerce.number().min(0, { message: "Price must be a positive number." }),
+  sellingPrice: z.coerce.number().min(0, { message: "Selling Price must be a positive number." }),
+  costPrice: z.coerce.number().optional(),
+  minPrice: z.coerce.number().optional(),
+  wholesalePrice: z.coerce.number().optional(),
+  price2: z.coerce.number().optional(),
+  foreignPrice: z.coerce.number().optional(),
   variants: z.array(
     z.object({
       sku: z.string().min(1, { message: "SKU is required." }),
@@ -60,7 +65,7 @@ const defaultValues: Partial<ProductFormValues> = {
   name: "",
   description: "",
   status: "active",
-  price: 0,
+  sellingPrice: 0,
   variants: [{ sku: "", color: "", size: "" }],
   collections: [],
 };
@@ -159,13 +164,78 @@ export function ProductForm() {
                     <CardHeader>
                         <CardTitle>Pricing</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="price"
+                            name="sellingPrice"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Price</FormLabel>
+                                    <FormLabel>Selling Price</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="costPrice"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Cost</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="minPrice"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Minimum Price</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="wholesalePrice"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Wholesale Price</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="price2"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Price 2</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="foreignPrice"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Foreign Price</FormLabel>
                                     <FormControl>
                                         <Input type="number" placeholder="0.00" {...field} startIcon="$" />
                                     </FormControl>
@@ -356,5 +426,3 @@ export function ProductForm() {
     </Form>
   );
 }
-
-    
