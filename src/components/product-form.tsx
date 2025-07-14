@@ -1,3 +1,4 @@
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +33,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { collections, products } from "@/lib/data";
 import { Trash2, UploadCloud } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 const productFormSchema = z.object({
@@ -66,6 +67,7 @@ const defaultValues: Partial<ProductFormValues> = {
 
 export function ProductForm() {
   const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues,
@@ -145,10 +147,10 @@ export function ProductForm() {
                         <CardDescription>Add images for your product.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                         <div className="border-2 border-dashed border-muted-foreground/50 rounded-lg p-12 text-center">
+                         <div className="border-2 border-dashed border-muted rounded-lg p-12 text-center hover:border-primary/50 transition-colors">
                             <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
                             <p className="mt-4 text-sm text-muted-foreground">Drag and drop images here, or click to browse.</p>
-                            <Button variant="outline" className="mt-4">Browse</Button>
+                            <Button variant="outline" type="button" className="mt-4">Browse Files</Button>
                          </div>
                     </CardContent>
                 </Card>
@@ -165,7 +167,7 @@ export function ProductForm() {
                                 <FormItem>
                                     <FormLabel>Price</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="0.00" {...field} />
+                                        <Input type="number" placeholder="0.00" {...field} startIcon="$" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -177,7 +179,7 @@ export function ProductForm() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Variants</CardTitle>
-                        <CardDescription>Add variants like size or color.</CardDescription>
+                        <CardDescription>Add variants like size or color. Each variant must have a unique SKU.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         {fields.map((field, index) => (
@@ -186,7 +188,7 @@ export function ProductForm() {
                                     control={form.control}
                                     name={`variants.${index}.sku`}
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem className="col-span-full md:col-span-1">
                                         <FormLabel>SKU</FormLabel>
                                         <FormControl>
                                             <Input placeholder="TS-BLK-S" {...field} />
@@ -354,3 +356,5 @@ export function ProductForm() {
     </Form>
   );
 }
+
+    
