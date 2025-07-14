@@ -129,10 +129,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             {navItems.map((item, index) =>
               item.subItems ? (
                 <Collapsible key={index} defaultOpen={pathname.startsWith('/products')}>
-                  <SidebarMenuItem className="group">
+                  <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
-                        className="justify-start w-full"
+                        className="justify-start w-full group"
                         variant="ghost"
                       >
                         <item.icon className="mr-2 h-4 w-4" />
