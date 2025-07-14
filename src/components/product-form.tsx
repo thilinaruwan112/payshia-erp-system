@@ -122,21 +122,23 @@ export function ProductForm() {
                     <CardHeader>
                         <CardTitle>Product Details</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Product Name</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g. Classic T-Shirt" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Product Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="e.g. Classic T-Shirt" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
                             control={form.control}
                             name="displayName"
                             render={({ field }) => (
@@ -162,7 +164,7 @@ export function ProductForm() {
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                         <FormField
                             control={form.control}
                             name="tamilName"
                             render={({ field }) => (
@@ -188,47 +190,51 @@ export function ProductForm() {
                                 </FormItem>
                             )}
                         />
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="Tell your customers about this great product."
-                                        className="resize-none"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="stockUnit"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Stock Unit</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <div className="md:col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Description</FormLabel>
                                     <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a unit" />
-                                        </SelectTrigger>
+                                        <Textarea
+                                            placeholder="Tell your customers about this great product."
+                                            className="resize-none"
+                                            {...field}
+                                        />
                                     </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Nos">Nos (Numbers)</SelectItem>
-                                        <SelectItem value="KG">KG (Kilogram)</SelectItem>
-                                        <SelectItem value="Gram">Gram</SelectItem>
-                                        <SelectItem value="Litre">Litre</SelectItem>
-                                        <SelectItem value="ml">ml (Millilitre)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                         <div className="md:col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="stockUnit"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Stock Unit</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a unit" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Nos">Nos (Numbers)</SelectItem>
+                                            <SelectItem value="KG">KG (Kilogram)</SelectItem>
+                                            <SelectItem value="Gram">Gram</SelectItem>
+                                            <SelectItem value="Litre">Litre</SelectItem>
+                                            <SelectItem value="ml">ml (Millilitre)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
 
