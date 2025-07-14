@@ -40,6 +40,20 @@ export type User = {
   avatar: string;
 };
 
+export type Collection = {
+  id: string;
+  title: string;
+  productCount: number;
+};
+
+
+export const collections: Collection[] = [
+    { id: 'col-1', title: 'Summer Collection', productCount: 12 },
+    { id: 'col-2', title: 'New Arrivals', productCount: 5 },
+    { id: 'col-3', title: 'On Sale', productCount: 23 },
+    { id: 'col-4', title: 'Apparel', productCount: 8 },
+];
+
 export const locations: Location[] = [
   { id: 'loc-1', name: 'Main Warehouse', type: 'Warehouse' },
   { id: 'loc-2', name: 'Downtown Store', type: 'Store' },

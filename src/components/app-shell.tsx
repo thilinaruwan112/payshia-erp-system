@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { ReactNode } from 'react';
@@ -9,7 +10,8 @@ import {
   ShoppingCart,
   Truck,
   BotMessageSquare,
-  ChevronUp,
+  ChevronDown,
+  Tag,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -33,8 +35,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
-import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import React from 'react';
 
 const user = {
   name: 'Admin User',
@@ -50,9 +57,12 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    href: '/products',
     label: 'Products',
     icon: Package,
+    subItems: [
+      { href: '/products', label: 'All Products' },
+      { href: '/products/collections', label: 'Collections' },
+    ],
   },
   {
     href: '/orders',
@@ -116,31 +126,72 @@ export function AppShell({ children }: { children: ReactNode }) {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={
-                    item.href === '/'
-                      ? pathname === item.href
-                      : pathname.startsWith(item.href)
-                  }
-                  className="justify-start"
-                >
-                  <Link href={item.href}>
-                    <item.icon className="mr-2 h-4 w-4" />
-                    <span>{item.label}</span>
-                    {item.label === "AI Logistics" && <Badge variant="destructive" className="ml-auto bg-accent text-accent-foreground animate-pulse">New</Badge>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {navItems.map((item, index) =>
+              item.subItems ? (
+                <Collapsible key={index} defaultOpen={pathname.startsWith('/products')}>
+                  <SidebarMenuItem className="group">
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        className="justify-start w-full"
+                        variant="ghost"
+                      >
+                        <item.icon className="mr-2 h-4 w-4" />
+                        <span>{item.label}</span>
+                        <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform ease-in-out group-data-[state=open]:rotate-180" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                  </SidebarMenuItem>
+                  <CollapsibleContent>
+                    <ul className="pl-7 py-1 ml-1 border-l">
+                      {item.subItems.map((subItem) => (
+                        <li key={subItem.href}>
+                          <Link href={subItem.href}>
+                            <SidebarMenuButton
+                              variant="ghost"
+                              className="w-full justify-start text-muted-foreground"
+                              isActive={pathname === subItem.href}
+                            >
+                              {subItem.label}
+                            </SidebarMenuButton>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={
+                      item.href === '/'
+                        ? pathname === item.href
+                        : pathname.startsWith(item.href!)
+                    }
+                    className="justify-start"
+                  >
+                    <Link href={item.href!}>
+                      <item.icon className="mr-2 h-4 w-4" />
+                      <span>{item.label}</span>
+                      {item.label === 'AI Logistics' && (
+                        <Badge
+                          variant="destructive"
+                          className="ml-auto bg-accent text-accent-foreground animate-pulse"
+                        >
+                          New
+                        </Badge>
+                      )}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
           <div className="flex items-center gap-2">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={user.avatar} alt={user.name} data-ai-hint="profile picture"/>
+              <AvatarImage src={user.avatar} alt={user.name} data-ai-hint="profile picture" />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
