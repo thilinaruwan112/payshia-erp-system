@@ -217,8 +217,7 @@ export function OrderPanel({
         </div>
       </div>
 
-
-      <ScrollArea className="flex-1 min-h-0">
+      <div className="flex-1 overflow-y-auto">
         {cart.length === 0 ? (
           <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center">
             <p>Your cart is empty. Select a product to get started.</p>
@@ -286,9 +285,9 @@ export function OrderPanel({
             ))}
           </div>
         )}
-      </ScrollArea>
+      </div>
 
-      <footer className="p-4 border-t border-border mt-auto space-y-3">
+      <footer className="p-4 border-t border-border mt-auto space-y-3 shrink-0">
         <div className="flex justify-between text-sm">
           <span>Subtotal</span>
           <span>${orderTotals.subtotal.toFixed(2)}</span>
