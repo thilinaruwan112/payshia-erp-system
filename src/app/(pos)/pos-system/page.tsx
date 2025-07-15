@@ -156,10 +156,15 @@ export default function POSPage() {
   const clearCart = () => {
     if (!currentOrderId) return;
     setActiveOrders((prevOrders) =>
-      prevOrders.map((order) => 
-        order.id === currentOrderId ? { ...order, cart: [], discount: 0 } : order
-      )
+      prevOrders.map((order) => {
+        const currentOrderIndex = prevOrders.findIndex(o => o.id === currentOrderId);
+        if(currentOrderIndex > -1) {
+          prevOrders.splice(currentOrderIndex, 1);
+        }
+        return order;
+      })
     );
+    createNewOrder(); // Create a new empty order after clearing the paid one
     setDrawerOpen(false); // Close drawer after clearing cart
   };
 

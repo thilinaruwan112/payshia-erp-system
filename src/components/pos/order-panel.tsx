@@ -228,7 +228,7 @@ export function OrderPanel({
             {cart.map((item) => (
               <div key={item.product.id} className="p-4 flex gap-4">
                 <Image
-                  src="https://placehold.co/64x64.png"
+                  src={`https://placehold.co/64x64.png`}
                   alt={item.product.name}
                   width={64}
                   height={64}
