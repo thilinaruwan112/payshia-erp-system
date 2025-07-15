@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -34,7 +35,7 @@ export default function POSPage() {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [discount, setDiscount] = useState(0);
 
-  const [activeCustomer, setActiveCustomer] = useState(users[2]); // Default to a sales agent
+  const [activeCustomer, setActiveCustomer] = useState(users[3]); // Default to a walk-in customer
   const [currentCashier, setCurrentCashier] = useState(users[2]); 
 
   const addToCart = (product: Product) => {
@@ -129,38 +130,40 @@ export default function POSPage() {
           setCategory={setCategory}
           cashier={currentCashier}
         />
-        <main className="flex-1">
+        <main className="flex-1 p-4">
           <ProductGrid products={filteredProducts} onProductSelect={addToCart} />
         </main>
       </div>
 
-      {/* Desktop Order Panel */}
+      {/* Desktop Order Panel - always visible on large screens */}
       <div className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-card border-t lg:border-t-0 lg:border-l border-border flex-col hidden lg:flex">
          {orderPanelComponent}
       </div>
 
-       {/* Mobile "View Order" button and Drawer */}
-        {cart.length > 0 && (
-             <div className="lg:hidden fixed bottom-4 left-4 right-4 z-20">
-                <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
-                    <DrawerTrigger asChild>
-                         <Button className="w-full h-14 text-lg shadow-lg">
-                            <div className="flex items-center justify-between w-full">
-                                <div className='flex items-center gap-2'>
-                                    <ShoppingCart className="h-6 w-6" />
-                                    <span>View Order</span>
-                                    <Badge variant="secondary" className="text-base">{totalItems}</Badge>
-                                </div>
-                                <span className='font-bold'>${orderTotals.total.toFixed(2)}</span>
-                            </div>
-                        </Button>
-                    </DrawerTrigger>
-                    <DrawerContent className='h-[90vh]'>
-                       {orderPanelComponent}
-                    </DrawerContent>
-                </Drawer>
+       {/* Mobile "View Order" button and Drawer - only on small screens */}
+        <div className="lg:hidden">
+          {cart.length > 0 && (
+            <div className="fixed bottom-4 left-4 right-4 z-20">
+              <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
+                  <DrawerTrigger asChild>
+                        <Button className="w-full h-14 text-lg shadow-lg">
+                          <div className="flex items-center justify-between w-full">
+                              <div className='flex items-center gap-2'>
+                                  <ShoppingCart className="h-6 w-6" />
+                                  <span>View Order</span>
+                                  <Badge variant="secondary" className="text-base">{totalItems}</Badge>
+                              </div>
+                              <span className='font-bold'>${orderTotals.total.toFixed(2)}</span>
+                          </div>
+                      </Button>
+                  </DrawerTrigger>
+                  <DrawerContent className='h-[90vh]'>
+                      {orderPanelComponent}
+                  </DrawerContent>
+              </Drawer>
             </div>
-        )}
+          )}
+        </div>
     </div>
   );
 }
