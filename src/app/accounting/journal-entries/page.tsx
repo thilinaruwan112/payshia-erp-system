@@ -37,7 +37,7 @@ export default function JournalEntriesPage() {
           </p>
         </div>
         <Button asChild className="w-full sm:w-auto">
-          <Link href="#">
+          <Link href="/accounting/journal-entries/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             New Journal Entry
           </Link>
