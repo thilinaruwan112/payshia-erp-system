@@ -37,7 +37,7 @@ export default function AccountingDashboardPage() {
     const netIncome = totalRevenue - totalExpenses;
 
     const accountsPayable = chartOfAccounts.find(acc => acc.name === 'Accounts Payable')?.balance || 0;
-    const accountsReceivable = chartOfactions.find(acc => acc.name === 'Accounts Receivable')?.balance || 0;
+    const accountsReceivable = chartOfAccounts.find(acc => acc.name === 'Accounts Receivable')?.balance || 0;
 
     return {
       totalRevenue,
