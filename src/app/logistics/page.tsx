@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
@@ -21,13 +22,18 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { getLogisticsSuggestion } from './actions';
-import { BotMessageSquare, Loader2, Send } from 'lucide-react';
+import { BotMessageSquare, Loader2, Send, Zap } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { plans } from '@/lib/data';
+import Link from 'next/link';
 
 const initialState = {
   suggestion: '',
   error: '',
 };
+
+// Mock the current user's plan. In a real app, this would come from user authentication.
+const currentUserPlanId = 'plan-basic';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -43,8 +49,30 @@ function SubmitButton() {
   );
 }
 
+function UpgradePrompt() {
+  return (
+    <Card className="flex flex-col items-center justify-center text-center p-8">
+      <CardHeader>
+        <Zap className="h-12 w-12 mx-auto text-primary" />
+        <CardTitle className="mt-4">Upgrade to Access AI Logistics</CardTitle>
+        <CardDescription>
+          This feature is available on the Pro plan and above. Upgrade your plan to unlock AI-powered shipping vendor recommendations.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button asChild>
+          <Link href="/billing">View Plans</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function LogisticsPage() {
   const [state, formAction] = useFormState(getLogisticsSuggestion, initialState);
+
+  const currentUserPlan = plans.find(p => p.id === currentUserPlanId);
+  const hasAccess = currentUserPlan?.features.includes('AI Logistics Assistant') ?? false;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -59,53 +87,57 @@ export default function LogisticsPage() {
             </p>
           </div>
         </div>
-        <Card>
-          <form action={formAction}>
-            <CardHeader>
-              <CardTitle>Shipment Details</CardTitle>
-              <CardDescription>
-                Provide the details of your shipment to get an AI-powered
-                recommendation.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="packageDetails">Package Details</Label>
-                <Textarea
-                  id="packageDetails"
-                  name="packageDetails"
-                  placeholder="e.g., 1 box, 12x12x12 inches, 5 lbs, fragile"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="destination">Destination</Label>
-                <Input
-                  id="destination"
-                  name="destination"
-                  placeholder="e.g., New York, NY"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="urgency">Urgency</Label>
-                 <Select name="urgency" defaultValue="standard">
-                    <SelectTrigger id="urgency">
-                        <SelectValue placeholder="Select urgency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="standard">Standard</SelectItem>
-                        <SelectItem value="express">Express</SelectItem>
-                        <SelectItem value="overnight">Overnight</SelectItem>
-                    </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <SubmitButton />
-            </CardFooter>
-          </form>
-        </Card>
+        {hasAccess ? (
+          <Card>
+            <form action={formAction}>
+              <CardHeader>
+                <CardTitle>Shipment Details</CardTitle>
+                <CardDescription>
+                  Provide the details of your shipment to get an AI-powered
+                  recommendation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="packageDetails">Package Details</Label>
+                  <Textarea
+                    id="packageDetails"
+                    name="packageDetails"
+                    placeholder="e.g., 1 box, 12x12x12 inches, 5 lbs, fragile"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="destination">Destination</Label>
+                  <Input
+                    id="destination"
+                    name="destination"
+                    placeholder="e.g., New York, NY"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="urgency">Urgency</Label>
+                   <Select name="urgency" defaultValue="standard">
+                      <SelectTrigger id="urgency">
+                          <SelectValue placeholder="Select urgency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          <SelectItem value="standard">Standard</SelectItem>
+                          <SelectItem value="express">Express</SelectItem>
+                          <SelectItem value="overnight">Overnight</SelectItem>
+                      </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <SubmitButton />
+              </CardFooter>
+            </form>
+          </Card>
+        ) : (
+          <UpgradePrompt />
+        )}
       </div>
       <div className="sticky top-24">
         <Card className="min-h-[300px]">
@@ -122,14 +154,14 @@ export default function LogisticsPage() {
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
             )}
-            {state?.suggestion ? (
+            {state?.suggestion && hasAccess ? (
               <div
                 className="prose dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: state.suggestion }}
               />
             ) : (
               <div className="text-muted-foreground">
-                Your shipping suggestion will appear here.
+                {hasAccess ? "Your shipping suggestion will appear here." : "Upgrade your plan to see AI recommendations."}
               </div>
             )}
           </CardContent>
