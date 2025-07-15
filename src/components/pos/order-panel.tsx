@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -55,7 +54,7 @@ export function OrderPanel({
 
       <ScrollArea className="flex-1">
         {cart.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center">
+          <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center min-h-[150px]">
             <p>Your cart is empty. Select a product to get started.</p>
           </div>
         ) : (

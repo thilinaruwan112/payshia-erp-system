@@ -66,24 +66,26 @@ export default function POSPage() {
   }, [searchTerm, category]);
 
   return (
-    <div className="flex h-screen w-screen bg-background text-foreground overflow-hidden">
-      <div className="flex-1 flex flex-col">
-        <PosHeader
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            category={category}
-            setCategory={setCategory}
-        />
-        <ProductGrid products={filteredProducts} onProductSelect={addToCart} />
-      </div>
-      <div className="w-[380px] lg:w-[420px] flex-shrink-0 bg-card border-l border-border flex flex-col">
-        <OrderPanel
-          cart={cart}
-          onUpdateQuantity={updateQuantity}
-          onRemoveItem={removeFromCart}
-          onClearCart={clearCart}
-        />
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] h-screen w-screen bg-background text-foreground overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-y-auto">
+            <PosHeader
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                category={category}
+                setCategory={setCategory}
+            />
+            <main className="flex-1">
+                 <ProductGrid products={filteredProducts} onProductSelect={addToCart} />
+            </main>
+        </div>
+        <div className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-card border-t lg:border-t-0 lg:border-l border-border flex flex-col">
+            <OrderPanel
+                cart={cart}
+                onUpdateQuantity={updateQuantity}
+                onRemoveItem={removeFromCart}
+                onClearCart={clearCart}
+            />
+        </div>
     </div>
   );
 }
