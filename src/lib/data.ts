@@ -36,8 +36,9 @@ export type Order = {
 };
 
 export type User = {
+  id: string;
   name: string;
-  role: 'Admin' | 'Manager' | 'Sales Agent';
+  role: 'Admin' | 'Manager' | 'Sales Agent' | 'Customer';
   avatar: string;
 };
 
@@ -135,6 +136,37 @@ export const products: Product[] = [
     price: 75.0,
     variants: [{ sku: 'WL-LTH-BRN' }],
   },
+  {
+    id: 'prod-5',
+    name: 'Denim Jeans',
+    category: 'Apparel',
+    price: 89.99,
+    variants: [
+        { sku: 'JE-BLU-32', size: '32' },
+        { sku: 'JE-BLU-34', size: '34' }
+    ],
+  },
+  {
+    id: 'prod-6',
+    name: 'Bluetooth Speaker',
+    category: 'Electronics',
+    price: 120.00,
+    variants: [{ sku: 'SPK-BT-GRY' }],
+  },
+  {
+    id: 'prod-7',
+    name: 'Scented Candle',
+    category: 'Home Goods',
+    price: 22.00,
+    variants: [{ sku: 'CDL-LAV' }],
+  },
+  {
+    id: 'prod-8',
+    name: 'Canvas Backpack',
+    category: 'Accessories',
+    price: 65.00,
+    variants: [{ sku: 'BPK-CV-GRN' }],
+  }
 ];
 
 export const inventory: InventoryItem[] = [
@@ -151,6 +183,11 @@ export const inventory: InventoryItem[] = [
   { productId: 'prod-3', sku: 'MG-CER-BL', locationId: 'loc-2', stock: 60, reorderLevel: 20 },
   { productId: 'prod-4', sku: 'WL-LTH-BRN', locationId: 'loc-1', stock: 50, reorderLevel: 10 },
   { productId: 'prod-4', sku: 'WL-LTH-BRN', locationId: 'loc-3', stock: 5, reorderLevel: 5 },
+  { productId: 'prod-5', sku: 'JE-BLU-32', locationId: 'loc-1', stock: 70, reorderLevel: 15 },
+  { productId: 'prod-5', sku: 'JE-BLU-34', locationId: 'loc-2', stock: 25, reorderLevel: 10 },
+  { productId: 'prod-6', sku: 'SPK-BT-GRY', locationId: 'loc-1', stock: 40, reorderLevel: 10 },
+  { productId: 'prod-7', sku: 'CDL-LAV', locationId: 'loc-2', stock: 80, reorderLevel: 20 },
+  { productId: 'prod-8', sku: 'BPK-CV-GRN', locationId: 'loc-3', stock: 18, reorderLevel: 5 },
 ];
 
 export const orders: Order[] = [
@@ -220,4 +257,11 @@ export const goodsReceivedNotes: GoodsReceivedNote[] = [
 export const stockTransfers: StockTransfer[] = [
     { id: 'ST-001', fromLocationId: 'loc-1', fromLocationName: 'Main Warehouse', toLocationId: 'loc-2', toLocationName: 'Downtown Store', date: '2023-11-10', status: 'Completed', itemCount: 50 },
     { id: 'ST-002', fromLocationId: 'loc-1', fromLocationName: 'Main Warehouse', toLocationId: 'loc-3', toLocationName: 'Uptown Store', date: '2023-11-12', status: 'In Transit', itemCount: 30 },
+];
+
+export const users: User[] = [
+  { id: 'user-1', name: 'Admin User', role: 'Admin', avatar: 'https://placehold.co/100x100.png?text=AU' },
+  { id: 'user-2', name: 'Manager Mike', role: 'Manager', avatar: 'https://placehold.co/100x100.png?text=MM' },
+  { id: 'user-3', name: 'Cashier Chloe', role: 'Sales Agent', avatar: 'https://placehold.co/100x100.png?text=CC' },
+  { id: 'user-4', name: 'Walk-in Customer', role: 'Customer', avatar: 'https://placehold.co/100x100.png?text=WC' },
 ];

@@ -2,25 +2,40 @@
 
 import React, { useState, useMemo } from 'react';
 import type { Product } from '@/lib/data';
-import { products } from '@/lib/data';
+import { products, users } from '@/lib/data';
 import { ProductGrid } from '@/components/pos/product-grid';
 import { OrderPanel } from '@/components/pos/order-panel';
 import { PosHeader } from '@/components/pos/pos-header';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, X } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 
 export type CartItem = {
   product: Product;
   quantity: number;
 };
 
+export type OrderInfo = {
+  subtotal: number;
+  tax: number;
+  discount: number;
+  total: number;
+}
+
 export default function POSPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('All');
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [discount, setDiscount] = useState(0);
+
+  const [activeCustomer, setActiveCustomer] = useState(users[2]); // Default to a sales agent
+  const [currentCashier, setCurrentCashier] = useState(users[2]); 
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -60,6 +75,7 @@ export default function POSPage() {
 
   const clearCart = () => {
     setCart([]);
+    setDiscount(0);
     setDrawerOpen(false); // Close drawer after clearing cart
   };
 
@@ -70,31 +86,36 @@ export default function POSPage() {
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, category]);
-
+  
   const totalItems = useMemo(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 
-  const totalAmount = useMemo(() => {
+  const orderTotals = useMemo((): OrderInfo => {
      const subtotal = cart.reduce(
         (acc, item) => acc + item.product.price * item.quantity,
         0
       );
       const taxRate = 0.08;
       const tax = subtotal * taxRate;
-      return subtotal + tax;
-  }, [cart]);
+      const total = subtotal + tax - discount;
+      return { subtotal, tax, discount, total };
+  }, [cart, discount]);
 
 
   const orderPanelComponent = (
      <OrderPanel
         cart={cart}
+        orderTotals={orderTotals}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
         onClearCart={clearCart}
         isDrawer={isDrawerOpen}
         onClose={() => setDrawerOpen(false)}
-      />
+        discount={discount}
+        setDiscount={setDiscount}
+        customer={activeCustomer}
+     />
   );
 
 
@@ -106,6 +127,7 @@ export default function POSPage() {
           setSearchTerm={setSearchTerm}
           category={category}
           setCategory={setCategory}
+          cashier={currentCashier}
         />
         <main className="flex-1">
           <ProductGrid products={filteredProducts} onProductSelect={addToCart} />
@@ -129,7 +151,7 @@ export default function POSPage() {
                                     <span>View Order</span>
                                     <Badge variant="secondary" className="text-base">{totalItems}</Badge>
                                 </div>
-                                <span className='font-bold'>${totalAmount.toFixed(2)}</span>
+                                <span className='font-bold'>${orderTotals.total.toFixed(2)}</span>
                             </div>
                         </Button>
                     </DrawerTrigger>
