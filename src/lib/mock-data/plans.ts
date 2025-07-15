@@ -3,6 +3,19 @@ import type { Plan } from '@/lib/types';
 
 export const plans: Plan[] = [
     {
+        id: 'plan-free',
+        name: 'Free',
+        description: 'Perfect for exploring the platform.',
+        price: 0,
+        features: [
+            'Up to 100 Orders/mo',
+            'Up to 25 Products',
+            '1 Location',
+            'Basic Reporting'
+        ],
+        ctaLabel: 'Get Started'
+    },
+    {
         id: 'plan-basic',
         name: 'Basic',
         description: 'For small businesses getting started.',
@@ -14,7 +27,7 @@ export const plans: Plan[] = [
             'Basic Reporting',
             'Email Support'
         ],
-        ctaLabel: 'Get Started'
+        ctaLabel: 'Upgrade to Basic'
     },
     {
         id: 'plan-pro',
