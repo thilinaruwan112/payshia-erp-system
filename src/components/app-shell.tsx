@@ -190,11 +190,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { setOpenMobile } = useSidebar();
 
   const handleLinkClick = (isExternal: boolean | undefined, e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (isExternal) {
-      e.preventDefault();
-      window.open(e.currentTarget.href, '_blank');
-      return;
-    }
     // For regular links on mobile, close the sidebar after clicking.
     if (!isExternal) {
        setOpenMobile(false);
@@ -249,7 +244,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     isActive={isPathActive(pathname, item.href)}
                     className="justify-start"
                   >
-                    <Link href={item.href!} onClick={(e) => handleLinkClick(item.isExternal, e)}>
+                    <Link href={item.href!} onClick={(e) => handleLinkClick(item.isExternal, e)} target={item.isExternal ? "_blank" : "_self"} rel={item.isExternal ? "noopener noreferrer" : ""}>
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.label}</span>
                       {item.label === 'AI Logistics' && (
