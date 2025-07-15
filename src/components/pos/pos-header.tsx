@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { products } from '@/lib/data';
 import type { User } from '@/lib/types';
-import { LayoutDashboard, LogOut, Search, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, LogOut, Search, User as UserIcon, MapPin, CalendarDays, Clock } from 'lucide-react';
 import { ThemeToggle } from '../theme-toggle';
 import Link from 'next/link';
 import { Button } from '../ui/button';
@@ -25,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { format } from 'date-fns';
 
 interface PosHeaderProps {
   searchTerm: string;
@@ -33,6 +34,35 @@ interface PosHeaderProps {
   setCategory: (value: string) => void;
   cashier: User;
 }
+
+function DateTimeLocation() {
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    return (
+        <div className="flex items-center gap-4 text-sm text-muted-foreground order-2 sm:order-1 sm:mr-auto">
+             <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                <span>Downtown Store</span>
+            </div>
+             <div className="flex items-center gap-2">
+                <CalendarDays className="h-4 w-4" />
+                <span>{format(currentTime, 'PPP')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>{format(currentTime, 'p')}</span>
+            </div>
+        </div>
+    )
+}
+
 
 export function PosHeader({
   searchTerm,
@@ -44,11 +74,12 @@ export function PosHeader({
   const categories = ['All', ...new Set(products.map((p) => p.category))];
 
   return (
-    <header className="p-4 border-b border-border flex items-center gap-4 flex-wrap sticky top-0 bg-background z-10">
-      <Link href="/" className="text-xl font-bold mr-auto sm:mr-4">
+    <header className="p-4 border-b border-border flex flex-wrap items-center gap-4 sticky top-0 bg-background z-10">
+      <Link href="/" className="text-xl font-bold mr-4 order-1">
         BranchBrain
       </Link>
-      <div className="relative flex-1 w-full sm:w-auto sm:flex-grow-[2] order-3 sm:order-2">
+      <DateTimeLocation />
+      <div className="relative flex-1 w-full sm:w-auto sm:flex-grow-[2] order-3 sm:order-3">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           placeholder="Search products or scan barcode..."
@@ -57,7 +88,7 @@ export function PosHeader({
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      <div className="flex-grow sm:flex-grow-0 order-2 sm:order-3">
+      <div className="flex-grow sm:flex-grow-0 order-4 sm:order-4">
         <Select value={category} onValueChange={setCategory}>
           <SelectTrigger className="w-full sm:w-[180px] h-11">
             <SelectValue placeholder="Select a category" />
@@ -71,7 +102,7 @@ export function PosHeader({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center gap-2 order-1 sm:order-4 ml-auto sm:ml-0">
+      <div className="flex items-center gap-2 order-1 sm:order-5 ml-auto sm:ml-0">
         <ThemeToggle />
          <DropdownMenu>
             <DropdownMenuTrigger asChild>
