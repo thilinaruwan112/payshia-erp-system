@@ -10,6 +10,10 @@ export type Product = {
     size?: string;
   }[];
   price: number;
+  stockUnit?: 'Nos' | 'KG' | 'Gram' | 'Litre' | 'ml';
+  costPrice?: number;
+  minPrice?: number;
+  wholesalePrice?: number;
 };
 
 export type Location = {

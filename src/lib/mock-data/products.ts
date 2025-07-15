@@ -6,6 +6,10 @@ export const products: Product[] = [
     name: 'Classic T-Shirt',
     category: 'Apparel',
     price: 24.99,
+    minPrice: 20.00,
+    wholesalePrice: 18.00,
+    costPrice: 12.00,
+    stockUnit: 'Nos',
     variants: [
       { sku: 'TS-BLK-S', color: 'Black', size: 'S' },
       { sku: 'TS-BLK-M', color: 'Black', size: 'M' },
@@ -17,6 +21,10 @@ export const products: Product[] = [
     name: 'Wireless Mouse',
     category: 'Electronics',
     price: 49.99,
+    minPrice: 45.00,
+    wholesalePrice: 40.00,
+    costPrice: 25.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'MO-WL-01' }],
   },
   {
@@ -24,6 +32,10 @@ export const products: Product[] = [
     name: 'Coffee Mug',
     category: 'Home Goods',
     price: 12.5,
+    minPrice: 10.00,
+    wholesalePrice: 8.00,
+    costPrice: 5.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'MG-CER-BL' }],
   },
   {
@@ -31,6 +43,10 @@ export const products: Product[] = [
     name: 'Leather Wallet',
     category: 'Accessories',
     price: 75.0,
+    minPrice: 70.00,
+    wholesalePrice: 60.00,
+    costPrice: 35.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'WL-LTH-BRN' }],
   },
   {
@@ -38,6 +54,10 @@ export const products: Product[] = [
     name: 'Denim Jeans',
     category: 'Apparel',
     price: 89.99,
+    minPrice: 80.00,
+    wholesalePrice: 70.00,
+    costPrice: 45.00,
+    stockUnit: 'Nos',
     variants: [
         { sku: 'JE-BLU-32', size: '32' },
         { sku: 'JE-BLU-34', size: '34' }
@@ -48,6 +68,10 @@ export const products: Product[] = [
     name: 'Bluetooth Speaker',
     category: 'Electronics',
     price: 120.00,
+    minPrice: 110.00,
+    wholesalePrice: 95.00,
+    costPrice: 60.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'SPK-BT-GRY' }],
   },
   {
@@ -55,6 +79,10 @@ export const products: Product[] = [
     name: 'Scented Candle',
     category: 'Home Goods',
     price: 22.00,
+    minPrice: 18.00,
+    wholesalePrice: 15.00,
+    costPrice: 10.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'CDL-LAV' }],
   },
   {
@@ -62,6 +90,10 @@ export const products: Product[] = [
     name: 'Canvas Backpack',
     category: 'Accessories',
     price: 65.00,
+    minPrice: 60.00,
+    wholesalePrice: 50.00,
+    costPrice: 30.00,
+    stockUnit: 'Nos',
     variants: [{ sku: 'BPK-CV-GRN' }],
   }
 ];

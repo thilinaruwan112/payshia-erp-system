@@ -9,12 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { Delete } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
+import { Separator } from '../ui/separator';
 
 interface AddToCartDialogProps {
   product: Product | null;
@@ -28,28 +30,36 @@ export function AddToCartDialog({
   onAddToCart,
 }: AddToCartDialogProps) {
   const [quantity, setQuantity] = useState('1');
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState('0');
 
   useEffect(() => {
     if (product) {
       setQuantity('1');
-      setDiscount(0);
+      setDiscount('0');
     }
   }, [product]);
 
   const handleAddToCart = () => {
     if (product) {
-      const numQuantity = parseInt(quantity, 10);
+      const numQuantity = parseFloat(quantity);
+      const numDiscount = parseFloat(discount);
       if (numQuantity > 0) {
-        onAddToCart(product, numQuantity, discount);
+        onAddToCart(product, numQuantity, numDiscount);
       }
     }
   };
 
-  const handleQuantityButtonClick = (value: string) => {
+  const handleNumpadClick = (value: string) => {
     if (quantity === '0' || quantity === '1') {
-      setQuantity(value);
-    } else {
+      if (value === '.') {
+        setQuantity(quantity + value);
+      } else {
+        setQuantity(value);
+      }
+    } else if (value === '.' && quantity.includes('.')) {
+      return; // Do not add multiple decimals
+    }
+     else {
       setQuantity(quantity + value);
     }
   };
@@ -57,77 +67,108 @@ export function AddToCartDialog({
   const handleClear = () => {
     setQuantity('1');
   };
-  
-  const handleDelete = () => {
-    if (quantity.length > 1) {
-        setQuantity(quantity.slice(0, -1));
-    } else {
-        setQuantity('1');
-    }
-  };
 
   const isOpen = !!product;
+  const discountedPrice = product ? product.price - parseFloat(discount) : 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-4xl p-0">
         {product && (
-          <>
-            <DialogHeader>
-              <DialogTitle>{product.name}</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <div className="flex items-center gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            {/* Left Column: Product Info */}
+            <div className="p-6 flex flex-col">
+              <DialogHeader className="mb-4">
+                <DialogTitle className="text-2xl">{product.name}</DialogTitle>
+                <p className="text-sm text-muted-foreground">{product.variants[0].sku}</p>
+              </DialogHeader>
+
+              <div className="bg-muted/50 rounded-lg p-4 flex justify-center items-center mb-4">
                 <Image
-                  src={`https://placehold.co/100x100.png`}
+                  src={`https://placehold.co/200x150.png`}
                   alt={product.name}
-                  width={100}
-                  height={100}
-                  className="rounded-lg object-cover"
+                  width={200}
+                  height={150}
+                  className="rounded-md object-cover"
                   data-ai-hint="product photo"
                 />
+              </div>
+
+              <div className="grid grid-cols-4 gap-y-3 text-sm mb-4">
                 <div>
-                  <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
-                  <p className="text-sm text-muted-foreground">{product.category}</p>
+                  <p className="text-muted-foreground">Stock</p>
+                  <p className="font-bold">25</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Unit</p>
+                  <p className="font-bold">{product.stockUnit || 'Nos'}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Price</p>
+                  <p className="font-bold">${product.price.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Min</p>
+                  <p className="font-bold text-red-500">${(product.minPrice || 0).toFixed(2)}</p>
+                </div>
+                 <div>
+                  <p className="text-muted-foreground">Wholesale</p>
+                  <p className="font-bold">${(product.wholesalePrice || 0).toFixed(2)}</p>
+                </div>
+                <div className="col-span-3">
+                  <p className="text-muted-foreground">Barcode</p>
+                  <p className="font-mono tracking-widest">{product.variants[0].sku}</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="space-y-2">
-                    <Label htmlFor="quantity">Quantity</Label>
-                    <div className="flex items-center gap-2 rounded-md border p-2 justify-center text-2xl font-bold h-11">
-                        {quantity}
-                    </div>
-                     <div className="grid grid-cols-3 gap-2">
-                        {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
-                            <Button key={num} variant="outline" type="button" onClick={() => handleQuantityButtonClick(num)} className="h-12 text-lg">
-                                {num}
-                            </Button>
-                        ))}
-                         <Button variant="outline" type="button" onClick={handleClear} className="h-12 text-lg">C</Button>
-                        <Button variant="outline" type="button" onClick={() => handleQuantityButtonClick('0')} className="h-12 text-lg">0</Button>
-                         <Button variant="outline" type="button" onClick={handleDelete} className="h-12 text-lg"><Delete className="h-5 w-5" /></Button>
-                    </div>
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="discount">Item Discount ($)</Label>
-                  <Input
-                    id="discount"
-                    type="number"
+              
+              <div className="mt-auto grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="item-discount">Item Discount</Label>
+                  <Input 
+                    id="item-discount" 
+                    type="number" 
                     value={discount}
-                    onChange={(e) => setDiscount(Number(e.target.value))}
-                    startIcon="$"
+                    onChange={(e) => setDiscount(e.target.value)}
                     min="0"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="discounted-price">Discounted Price</Label>
+                  <Input id="discounted-price" readOnly value={discountedPrice.toFixed(2)} />
+                </div>
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={onClose}>
-                Cancel
+
+            {/* Right Column: Numpad */}
+            <div className="p-6 bg-muted/30 flex flex-col">
+              <div className="flex justify-between items-center mb-4">
+                 <h3 className="text-lg font-semibold">Select Quantity</h3>
+                 <DialogClose asChild>
+                    <Button variant="ghost" size="icon">
+                        <X className="h-4 w-4" />
+                    </Button>
+                 </DialogClose>
+              </div>
+              <Input 
+                readOnly 
+                value={quantity}
+                className="h-14 text-3xl font-bold text-right mb-4"
+              />
+              <div className="grid grid-cols-3 gap-2 flex-1">
+                {['7', '8', '9', '4', '5', '6', '1', '2', '3'].map((num) => (
+                    <Button key={num} variant="outline" type="button" onClick={() => handleNumpadClick(num)} className="h-full text-2xl bg-background">
+                        {num}
+                    </Button>
+                ))}
+                <Button variant="outline" type="button" onClick={() => handleNumpadClick('0')} className="h-full text-2xl bg-background">0</Button>
+                <Button variant="outline" type="button" onClick={() => handleNumpadClick('.')} className="h-full text-2xl bg-background">.</Button>
+                <Button variant="outline" type="button" onClick={handleClear} className="h-full text-2xl bg-destructive/20 text-destructive-foreground hover:bg-destructive/30">C</Button>
+              </div>
+              <Button onClick={handleAddToCart} disabled={!quantity || parseFloat(quantity) <= 0} className="w-full h-14 text-lg mt-4">
+                <Plus className="mr-2 h-5 w-5" /> Add
               </Button>
-              <Button onClick={handleAddToCart} disabled={!quantity || parseInt(quantity) <= 0}>Add to Order</Button>
-            </DialogFooter>
-          </>
+            </div>
+          </div>
         )}
       </DialogContent>
     </Dialog>
