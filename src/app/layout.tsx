@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { AppShell } from '@/components/app-shell';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'BranchBrain',
@@ -32,9 +30,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <AppShell>{children}</AppShell>
-          </SidebarProvider>
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

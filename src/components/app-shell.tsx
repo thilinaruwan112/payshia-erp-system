@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { ReactNode } from 'react';
@@ -53,7 +54,6 @@ import {
 } from '@/components/ui/collapsible';
 import React from 'react';
 import { ThemeToggle } from './theme-toggle';
-import { SheetTitle } from './ui/sheet';
 
 const user = {
   name: 'Admin User',
@@ -64,7 +64,7 @@ const user = {
 
 const navItems = [
   {
-    href: '/',
+    href: '/dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
   },
@@ -170,7 +170,7 @@ function UserMenu() {
 
 function Brand() {
   return (
-    <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+    <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg">
       <Truck className="h-6 w-6 text-primary" />
       <span>BranchBrain</span>
     </Link>
@@ -182,7 +182,9 @@ const isPathActive = (pathname: string, href?: string, subItems?: { href: string
     return subItems.some(item => pathname.startsWith(item.href));
   }
   if (!href) return false;
-  return href === '/' ? pathname === href : pathname.startsWith(href);
+  // Exact match for dashboard, startsWith for others
+  if (href === '/dashboard') return pathname === href;
+  return pathname.startsWith(href);
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
