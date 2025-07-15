@@ -10,21 +10,30 @@ import {
 } from '@/components/ui/card';
 import { plans } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { Check, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 export default function BillingPage() {
   const currentPlanId = 'plan-pro'; // Mock current plan
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Billing & Plans</h1>
-        <p className="text-muted-foreground">
-          Manage your subscription and billing details.
-        </p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Billing & Plans</h1>
+          <p className="text-muted-foreground">
+            Manage your subscription and billing details.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link href="/billing/plans">
+            <Settings className="mr-2 h-4 w-4" />
+            Manage Plans
+          </Link>
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 items-start">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
         {plans.map((plan) => (
           <Card
             key={plan.id}
