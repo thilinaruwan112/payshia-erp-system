@@ -1,4 +1,6 @@
 
+'use client';
+
 import {
   Card,
   CardContent,
@@ -6,9 +8,50 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { DollarSign, Receipt, TrendingUp, TrendingDown } from 'lucide-react';
+import { DollarSign, Receipt, TrendingUp, TrendingDown, Package, ShoppingCart } from 'lucide-react';
+import { orders, chartOfAccounts } from '@/lib/data';
+import { useMemo } from 'react';
+import type { Account } from '@/lib/types';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Rectangle,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 export default function AccountingDashboardPage() {
+  const financialSummary = useMemo(() => {
+    const totalRevenue = orders
+      .filter((o) => o.status !== 'Cancelled')
+      .reduce((acc, order) => acc + order.total, 0);
+
+    const totalExpenses = chartOfAccounts
+      .filter((acc) => acc.type === 'Expense')
+      .reduce((acc, expense) => acc + expense.balance, 0);
+      
+    const netIncome = totalRevenue - totalExpenses;
+
+    const accountsPayable = chartOfAccounts.find(acc => acc.name === 'Accounts Payable')?.balance || 0;
+    const accountsReceivable = chartOfactions.find(acc => acc.name === 'Accounts Receivable')?.balance || 0;
+
+    return {
+      totalRevenue,
+      totalExpenses,
+      netIncome,
+      accountsPayable,
+      accountsReceivable,
+    };
+  }, []);
+  
+  const chartData = [
+    { name: 'Financials', Revenue: financialSummary.totalRevenue, Expenses: financialSummary.totalExpenses, 'Net Income': financialSummary.netIncome },
+  ];
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -25,8 +68,8 @@ export default function AccountingDashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <div className="text-2xl font-bold">${financialSummary.totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            <p className="text-xs text-muted-foreground">From all sales channels</p>
           </CardContent>
         </Card>
         <Card>
@@ -35,8 +78,8 @@ export default function AccountingDashboardPage() {
             <Receipt className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$21,890.10</div>
-            <p className="text-xs text-muted-foreground">+12.5% from last month</p>
+            <div className="text-2xl font-bold">${financialSummary.totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            <p className="text-xs text-muted-foreground">Based on chart of accounts</p>
           </CardContent>
         </Card>
         <Card>
@@ -45,8 +88,8 @@ export default function AccountingDashboardPage() {
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$23,341.79</div>
-            <p className="text-xs text-muted-foreground">+30.2% from last month</p>
+            <div className="text-2xl font-bold">${financialSummary.netIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            <p className="text-xs text-muted-foreground">Revenue minus expenses</p>
           </CardContent>
         </Card>
         <Card>
@@ -55,22 +98,38 @@ export default function AccountingDashboardPage() {
             <TrendingDown className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$5,743.50</div>
-            <p className="text-xs text-muted-foreground">Due within 30 days</p>
+            <div className="text-2xl font-bold">${financialSummary.accountsPayable.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            <p className="text-xs text-muted-foreground">Money owed to suppliers</p>
           </CardContent>
         </Card>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Coming Soon</CardTitle>
+          <CardTitle>Financial Summary</CardTitle>
           <CardDescription>
-            More detailed financial reports and charts will be available here soon.
+            A visual breakdown of revenue, expenses, and net income.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center h-48 text-muted-foreground">
-            <p>Financial charts will be displayed here.</p>
-          </div>
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value/1000}k`} />
+                <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: 'var(--radius)',
+                    }}
+                    cursor={{fill: 'hsl(var(--muted))'}}
+                />
+                <Legend />
+                <Bar dataKey="Revenue" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Expenses" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Net Income" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </CardContent>
       </Card>
     </div>
