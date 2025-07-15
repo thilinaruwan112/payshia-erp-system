@@ -108,11 +108,11 @@ export function ProductForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight">Create Product</h1>
-            <div className="flex items-center gap-2">
-                <Button variant="outline" type="button" onClick={() => router.back()}>Cancel</Button>
-                <Button type="submit">Save Product</Button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h1 className="text-3xl font-bold tracking-tight text-nowrap">Create Product</h1>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button variant="outline" type="button" onClick={() => router.back()} className="w-full">Cancel</Button>
+                <Button type="submit" className="w-full">Save Product</Button>
             </div>
         </div>
 
@@ -345,12 +345,12 @@ export function ProductForm() {
                     </CardHeader>
                     <CardContent>
                         {fields.map((field, index) => (
-                           <div key={field.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end border p-4 rounded-md mb-4 relative">
+                           <div key={field.id} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end border p-4 rounded-md mb-4 relative">
                                 <FormField
                                     control={form.control}
                                     name={`variants.${index}.sku`}
                                     render={({ field }) => (
-                                        <FormItem className="col-span-full md:col-span-1">
+                                        <FormItem className="col-span-full sm:col-span-1">
                                         <FormLabel>SKU</FormLabel>
                                         <FormControl>
                                             <Input placeholder="TS-BLK-S" {...field} />

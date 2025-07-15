@@ -67,11 +67,10 @@ export default function OrdersPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Channel</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Order</TableHead>
+                <TableHead className="hidden sm:table-cell">Status</TableHead>
+                <TableHead className="hidden md:table-cell">Channel</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="text-right">Total</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -81,17 +80,24 @@ export default function OrdersPage() {
             <TableBody>
               {orders.map((order) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.id}</TableCell>
-                  <TableCell>{order.customerName}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{order.channel}</Badge>
+                    <div className="font-medium">{order.id}</div>
+                    <div className="text-sm text-muted-foreground">{order.customerName}</div>
+                     <div className="sm:hidden mt-1">
+                      <Badge variant="secondary" className={cn(getStatusColor(order.status))}>
+                        {order.status}
+                      </Badge>
+                    </div>
                   </TableCell>
-                  <TableCell>{new Date(order.date).toLocaleDateString()}</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge variant="secondary" className={cn(getStatusColor(order.status))}>
                       {order.status}
                     </Badge>
                   </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <Badge variant="outline">{order.channel}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{new Date(order.date).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
                     ${order.total.toFixed(2)}
                   </TableCell>

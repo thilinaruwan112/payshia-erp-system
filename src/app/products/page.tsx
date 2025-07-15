@@ -30,14 +30,14 @@ import Link from 'next/link';
 export default function ProductsPage() {
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Products</h1>
           <p className="text-muted-foreground">
             Manage your products and their variants.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/products/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Product
@@ -56,11 +56,11 @@ export default function ProductsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[80px]">Image</TableHead>
-                <TableHead>Product Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Inventory</TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead className="w-[80px] hidden sm:table-cell">Image</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead className="hidden md:table-cell">Status</TableHead>
+                <TableHead className="hidden md:table-cell">Inventory</TableHead>
+                <TableHead className="hidden lg:table-cell">Category</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -74,7 +74,7 @@ export default function ProductsPage() {
 
                 return (
                   <TableRow key={product.id}>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Image
                         alt={product.name}
                         className="aspect-square rounded-md object-cover"
@@ -84,8 +84,11 @@ export default function ProductsPage() {
                         data-ai-hint="product photo"
                       />
                     </TableCell>
-                    <TableCell className="font-medium">{product.name}</TableCell>
                     <TableCell>
+                      <div className="font-medium">{product.name}</div>
+                      <div className="text-sm text-muted-foreground lg:hidden">{product.category}</div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Badge
                         variant={totalStock > 0 ? 'secondary' : 'destructive'}
                         className={
@@ -97,8 +100,8 @@ export default function ProductsPage() {
                         {totalStock > 0 ? 'Active' : 'Archived'}
                       </Badge>
                     </TableCell>
-                    <TableCell>{totalStock} in stock</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">{totalStock} in stock</TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <Badge variant="outline">{product.category}</Badge>
                     </TableCell>
                     <TableCell>
