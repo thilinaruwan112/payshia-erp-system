@@ -16,16 +16,19 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { useToast } from '@/hooks/use-toast';
+import { AddToCartDialog } from '@/components/pos/add-to-cart-dialog';
 
 export type CartItem = {
   product: Product;
   quantity: number;
+  itemDiscount?: number;
 };
 
 export type OrderInfo = {
   subtotal: number;
   tax: number;
-  discount: number;
+  discount: number; // Order-level discount
+  itemDiscounts: number; // Sum of all item-level discounts
   total: number;
 };
 
@@ -33,7 +36,7 @@ export type ActiveOrder = {
   id: string;
   name: string;
   cart: CartItem[];
-  discount: number;
+  discount: number; // Order-level discount
   customer: User;
 };
 
@@ -48,6 +51,8 @@ export default function POSPage() {
   const [category, setCategory] = useState('All');
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isHeldOrdersOpen, setHeldOrdersOpen] = useState(false);
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [currentCashier, setCurrentCashier] = useState(users[2]);
 
@@ -75,13 +80,20 @@ export default function POSPage() {
     }
   }, [activeOrders.length]);
 
-  const addToCart = (product: Product) => {
+  const handleProductSelect = (product: Product) => {
     if (!currentOrderId) {
-      toast({
+       toast({
         variant: 'destructive',
         title: 'No Active Order',
         description: 'Please create a new order first.',
       });
+      return;
+    }
+    setSelectedProduct(product);
+  }
+
+  const addToCart = (product: Product, quantity: number, discount: number) => {
+    if (!currentOrderId) {
       return;
     }
     setActiveOrders((prevOrders) =>
@@ -94,15 +106,16 @@ export default function POSPage() {
         if (existingItem) {
           newCart = order.cart.map((item) =>
             item.product.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + quantity, itemDiscount: (item.itemDiscount || 0) + discount }
               : item
           );
         } else {
-          newCart = [...order.cart, { product, quantity: 1 }];
+          newCart = [...order.cart, { product, quantity, itemDiscount: discount }];
         }
         return { ...order, cart: newCart };
       })
     );
+    setSelectedProduct(null); // Close the dialog
   };
 
   const updateQuantity = (productId: string, newQuantity: number) => {
@@ -207,15 +220,16 @@ export default function POSPage() {
   }, [currentOrder]);
 
   const orderTotals = useMemo((): OrderInfo => {
-     if (!currentOrder) return { subtotal: 0, tax: 0, discount: 0, total: 0 };
+     if (!currentOrder) return { subtotal: 0, tax: 0, discount: 0, itemDiscounts: 0, total: 0 };
      const subtotal = currentOrder.cart.reduce(
         (acc, item) => acc + item.product.price * item.quantity,
         0
       );
+      const itemDiscounts = currentOrder.cart.reduce((acc, item) => acc + (item.itemDiscount || 0), 0);
       const taxRate = 0.08;
-      const tax = subtotal * taxRate;
-      const total = subtotal + tax - currentOrder.discount;
-      return { subtotal, tax, discount: currentOrder.discount, total };
+      const tax = (subtotal - itemDiscounts) * taxRate;
+      const total = subtotal - itemDiscounts + tax - currentOrder.discount;
+      return { subtotal, tax, discount: currentOrder.discount, itemDiscounts, total };
   }, [currentOrder]);
 
 
@@ -263,65 +277,72 @@ export default function POSPage() {
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] h-screen w-screen bg-background text-foreground overflow-hidden">
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        <PosHeader
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          category={category}
-          setCategory={setCategory}
-          cashier={currentCashier}
-        />
-        <main className="flex-1 p-4">
-          <div className="flex justify-end gap-2 mb-4">
-            <Drawer open={isHeldOrdersOpen} onOpenChange={setHeldOrdersOpen}>
-                <DrawerTrigger asChild>
-                    <Button variant="outline">
-                        <NotebookPen className="mr-2 h-4 w-4" />
-                        Held Orders ({activeOrders.filter(o => o.id !== currentOrderId).length})
-                    </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                    {heldOrdersList}
-                </DrawerContent>
-            </Drawer>
-            <Button onClick={createNewOrder}>
-                <Plus className="mr-2 h-4 w-4" /> New Order
-            </Button>
-          </div>
-          <ProductGrid products={filteredProducts} onProductSelect={addToCart} />
-        </main>
-      </div>
-
-      {/* Desktop Order Panel - always visible on large screens */}
-      <aside className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-card border-t lg:border-t-0 lg:border-l border-border flex-col hidden lg:flex">
-         {orderPanelComponent}
-      </aside>
-
-       {/* Mobile "View Order" button and Drawer - only on small screens */}
-        <div className="lg:hidden">
-          {currentOrder && currentOrder.cart.length > 0 && (
-            <div className="fixed bottom-4 left-4 right-4 z-20">
-              <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
+    <>
+      <AddToCartDialog
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={addToCart}
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] h-screen w-screen bg-background text-foreground overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-y-auto">
+          <PosHeader
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            category={category}
+            setCategory={setCategory}
+            cashier={currentCashier}
+          />
+          <main className="flex-1 p-4">
+            <div className="flex justify-end gap-2 mb-4">
+              <Drawer open={isHeldOrdersOpen} onOpenChange={setHeldOrdersOpen}>
                   <DrawerTrigger asChild>
-                        <Button className="w-full h-14 text-lg shadow-lg">
-                          <div className="flex items-center justify-between w-full">
-                              <div className='flex items-center gap-2'>
-                                  <ShoppingCart className="h-6 w-6" />
-                                  <span>View {currentOrder.name}</span>
-                                  <Badge variant="secondary" className="text-base">{totalItems}</Badge>
-                              </div>
-                              <span className='font-bold'>${orderTotals.total.toFixed(2)}</span>
-                          </div>
+                      <Button variant="outline">
+                          <NotebookPen className="mr-2 h-4 w-4" />
+                          Held Orders ({activeOrders.filter(o => o.id !== currentOrderId).length})
                       </Button>
                   </DrawerTrigger>
-                  <DrawerContent className='h-[90vh]'>
-                      {orderPanelComponent}
+                  <DrawerContent>
+                      {heldOrdersList}
                   </DrawerContent>
               </Drawer>
+              <Button onClick={createNewOrder}>
+                  <Plus className="mr-2 h-4 w-4" /> New Order
+              </Button>
             </div>
-          )}
+            <ProductGrid products={filteredProducts} onProductSelect={handleProductSelect} />
+          </main>
         </div>
-    </div>
+
+        {/* Desktop Order Panel - always visible on large screens */}
+        <aside className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 bg-card border-t lg:border-t-0 lg:border-l border-border flex-col hidden lg:flex">
+          {orderPanelComponent}
+        </aside>
+
+        {/* Mobile "View Order" button and Drawer - only on small screens */}
+          <div className="lg:hidden">
+            {currentOrder && currentOrder.cart.length > 0 && (
+              <div className="fixed bottom-4 left-4 right-4 z-20">
+                <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
+                    <DrawerTrigger asChild>
+                          <Button className="w-full h-14 text-lg shadow-lg">
+                            <div className="flex items-center justify-between w-full">
+                                <div className='flex items-center gap-2'>
+                                    <ShoppingCart className="h-6 w-6" />
+                                    <span>View {currentOrder.name}</span>
+                                    <Badge variant="secondary" className="text-base">{totalItems}</Badge>
+                                </div>
+                                <span className='font-bold'>${orderTotals.total.toFixed(2)}</span>
+                            </div>
+                        </Button>
+                    </DrawerTrigger>
+                    <DrawerContent className='h-[90vh]'>
+                        {orderPanelComponent}
+                    </DrawerContent>
+                </Drawer>
+              </div>
+            )}
+          </div>
+      </div>
+    </>
   );
 }

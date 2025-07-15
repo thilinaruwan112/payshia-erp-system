@@ -138,7 +138,7 @@ const DiscountDialog = ({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Apply Discount</DialogTitle>
+        <DialogTitle>Apply Order Discount</DialogTitle>
       </DialogHeader>
       <div className="space-y-2">
         <Label htmlFor="discount-value">Discount Amount ($)</Label>
@@ -240,6 +240,11 @@ export function OrderPanel({
                   <span className="text-muted-foreground text-sm">
                     ${item.product.price.toFixed(2)}
                   </span>
+                   {item.itemDiscount && item.itemDiscount > 0 ? (
+                      <span className="text-xs text-green-600">
+                        Discount: -${item.itemDiscount.toFixed(2)}
+                      </span>
+                    ) : null}
                   <div className="flex items-center gap-2 mt-auto">
                     <Button
                       size="icon"
@@ -288,12 +293,16 @@ export function OrderPanel({
           <span>Subtotal</span>
           <span>${orderTotals.subtotal.toFixed(2)}</span>
         </div>
+         <div className="flex justify-between text-sm text-green-600">
+          <span>Item Discounts</span>
+          <span>-${orderTotals.itemDiscounts.toFixed(2)}</span>
+        </div>
         <div className="flex justify-between text-sm">
           <span>Tax ({(0.08 * 100).toFixed(0)}%)</span>
           <span>${orderTotals.tax.toFixed(2)}</span>
         </div>
          <div className="flex justify-between text-sm text-green-600">
-          <span>Discount</span>
+          <span>Order Discount</span>
           <span>-${discount.toFixed(2)}</span>
         </div>
         <Separator />
@@ -306,7 +315,7 @@ export function OrderPanel({
              <Dialog open={isDiscountOpen} onOpenChange={setDiscountOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline">
-                  <TicketPercent className="mr-2 h-4 w-4" /> Discount
+                  <TicketPercent className="mr-2 h-4 w-4" /> Order Discount
                 </Button>
               </DialogTrigger>
               <DiscountDialog setDiscount={setDiscount} onClose={() => setDiscountOpen(false)} />
