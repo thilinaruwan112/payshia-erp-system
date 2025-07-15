@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import type { StockTransfer } from '@/lib/data';
+import type { StockTransfer } from '@/lib/types';
 
 const getStatusColor = (status: StockTransfer['status']) => {
   switch (status) {

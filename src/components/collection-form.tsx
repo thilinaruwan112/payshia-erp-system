@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { Collection, Product } from "@/lib/data";
 import { products } from "@/lib/data";
+import type { Collection, Product } from "@/lib/types";
 import { ProductPickerDialog } from "./product-picker-dialog";
 import React from "react";
 import Image from "next/image";

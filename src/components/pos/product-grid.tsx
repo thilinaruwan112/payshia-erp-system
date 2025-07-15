@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { Product } from '@/lib/data';
+import type { Product } from '@/lib/types';
 import { ProductCard } from './product-card';
 
 interface ProductGridProps {

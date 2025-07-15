@@ -17,13 +17,12 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { Supplier } from "@/lib/data";
+import type { Supplier } from "@/lib/types";
 import { Textarea } from "./ui/textarea";
 
 const supplierFormSchema = z.object({

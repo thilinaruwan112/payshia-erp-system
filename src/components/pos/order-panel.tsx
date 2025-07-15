@@ -1,8 +1,9 @@
+
 'use client';
 
 import React from 'react';
 import type { CartItem, OrderInfo } from '@/app/(pos)/pos-system/page';
-import type { User } from '@/lib/data';
+import type { User } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';

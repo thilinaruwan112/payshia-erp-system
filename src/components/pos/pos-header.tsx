@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -9,7 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { products, type User } from '@/lib/data';
+import { products } from '@/lib/data';
+import type { User } from '@/lib/types';
 import { LayoutDashboard, LogOut, Search, User as UserIcon } from 'lucide-react';
 import { ThemeToggle } from '../theme-toggle';
 import Link from 'next/link';

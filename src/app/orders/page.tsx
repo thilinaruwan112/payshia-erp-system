@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -24,8 +25,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { orders } from '@/lib/data';
+import type { Order } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import type { Order } from '@/lib/data';
 
 const getStatusColor = (status: Order['status']) => {
   switch (status) {

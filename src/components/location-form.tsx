@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { Location } from "@/lib/data";
+import type { Location } from "@/lib/types";
 import {
   Select,
   SelectContent,

@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import type { PurchaseOrder } from '@/lib/data';
+import type { PurchaseOrder } from '@/lib/types';
 
 const getStatusColor = (status: PurchaseOrder['status']) => {
   switch (status) {

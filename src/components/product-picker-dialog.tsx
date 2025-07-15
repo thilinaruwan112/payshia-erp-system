@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { products } from "@/lib/data"
-import type { Product } from "@/lib/data"
+import type { Product } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
 import Image from "next/image"
 import { Checkbox } from "./ui/checkbox"
