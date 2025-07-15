@@ -218,9 +218,9 @@ export function OrderPanel({
       </div>
 
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         {cart.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center min-h-[150px]">
+          <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center">
             <p>Your cart is empty. Select a product to get started.</p>
           </div>
         ) : (
