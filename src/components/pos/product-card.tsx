@@ -6,10 +6,6 @@ import type { Product } from '@/lib/types';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import Image from 'next/image';
 
@@ -34,9 +30,9 @@ export function ProductCard({ product, onSelect }: ProductCardProps) {
           data-ai-hint="product photo"
         />
         <div className='p-4'>
-            <h3 className="font-semibold text-base truncate group-hover:text-primary">{product.name}</h3>
+            <h3 className="font-semibold text-lg truncate group-hover:text-primary">{product.name}</h3>
             <p className="text-sm text-muted-foreground">{product.category}</p>
-            <p className="font-bold text-lg mt-2">${product.price.toFixed(2)}</p>
+            <p className="font-bold text-xl mt-2">${product.price.toFixed(2)}</p>
         </div>
       </CardContent>
     </Card>

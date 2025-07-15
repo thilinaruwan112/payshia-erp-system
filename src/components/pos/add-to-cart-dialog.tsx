@@ -99,13 +99,13 @@ export function AddToCartDialog({
                     </div>
                      <div className="grid grid-cols-3 gap-2">
                         {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
-                            <Button key={num} variant="outline" type="button" onClick={() => handleQuantityButtonClick(num)}>
+                            <Button key={num} variant="outline" type="button" onClick={() => handleQuantityButtonClick(num)} className="h-12 text-lg">
                                 {num}
                             </Button>
                         ))}
-                         <Button variant="outline" type="button" onClick={handleClear}>C</Button>
-                        <Button variant="outline" type="button" onClick={() => handleQuantityButtonClick('0')}>0</Button>
-                         <Button variant="outline" type="button" onClick={handleDelete}><Delete className="h-5 w-5" /></Button>
+                         <Button variant="outline" type="button" onClick={handleClear} className="h-12 text-lg">C</Button>
+                        <Button variant="outline" type="button" onClick={() => handleQuantityButtonClick('0')} className="h-12 text-lg">0</Button>
+                         <Button variant="outline" type="button" onClick={handleDelete} className="h-12 text-lg"><Delete className="h-5 w-5" /></Button>
                     </div>
                 </div>
                  <div className="space-y-2">

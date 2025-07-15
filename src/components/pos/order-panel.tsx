@@ -249,18 +249,18 @@ export function OrderPanel({
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className="h-8 w-8"
                       onClick={() =>
                         onUpdateQuantity(item.product.id, item.quantity - 1)
                       }
                     >
                       <MinusCircle className="h-5 w-5" />
                     </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
+                    <span className="w-8 text-center text-lg font-bold">{item.quantity}</span>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-7 w-7"
+                      className="h-8 w-8"
                       onClick={() =>
                         onUpdateQuantity(item.product.id, item.quantity + 1)
                       }
@@ -276,7 +276,7 @@ export function OrderPanel({
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="h-7 w-7 mt-auto text-muted-foreground hover:text-destructive"
+                    className="h-8 w-8 mt-auto text-muted-foreground hover:text-destructive"
                     onClick={() => onRemoveItem(item.product.id)}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -314,19 +314,19 @@ export function OrderPanel({
         <div className="grid grid-cols-2 gap-2 pt-2">
              <Dialog open={isDiscountOpen} onOpenChange={setDiscountOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="h-12">
                   <TicketPercent className="mr-2 h-4 w-4" /> Order Discount
                 </Button>
               </DialogTrigger>
               <DiscountDialog setDiscount={setDiscount} onClose={() => setDiscountOpen(false)} />
             </Dialog>
-             <Button variant="outline" onClick={onHoldOrder} disabled={cart.length === 0}>
+             <Button variant="outline" onClick={onHoldOrder} disabled={cart.length === 0} className="h-12">
                 <Notebook className="mr-2 h-4 w-4" /> Hold
             </Button>
             <Button
               variant="outline"
               onClick={onSendToKitchen}
-              className="col-span-2"
+              className="col-span-2 h-12"
               disabled={cart.length === 0}
             >
               <ChefHat className="mr-2 h-4 w-4" /> Send KOT/BOT
@@ -335,7 +335,7 @@ export function OrderPanel({
         <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
           <DialogTrigger asChild>
             <Button
-              className="w-full h-14 text-lg bg-green-600 hover:bg-green-700 text-white"
+              className="w-full h-16 text-lg bg-green-600 hover:bg-green-700 text-white"
               disabled={cart.length === 0}
             >
               <CreditCard className="mr-2 h-5 w-5" /> Pay

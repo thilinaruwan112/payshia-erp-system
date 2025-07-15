@@ -296,7 +296,7 @@ export default function POSPage() {
             <div className="flex justify-end gap-2 mb-4">
               <Drawer open={isHeldOrdersOpen} onOpenChange={setHeldOrdersOpen}>
                   <DrawerTrigger asChild>
-                      <Button variant="outline">
+                      <Button variant="outline" size="lg">
                           <NotebookPen className="mr-2 h-4 w-4" />
                           Held Orders ({activeOrders.filter(o => o.id !== currentOrderId).length})
                       </Button>
@@ -305,7 +305,7 @@ export default function POSPage() {
                       {heldOrdersList}
                   </DrawerContent>
               </Drawer>
-              <Button onClick={createNewOrder}>
+              <Button onClick={createNewOrder} size="lg">
                   <Plus className="mr-2 h-4 w-4" /> New Order
               </Button>
             </div>
@@ -324,7 +324,7 @@ export default function POSPage() {
               <div className="fixed bottom-4 left-4 right-4 z-20">
                 <Drawer open={isDrawerOpen} onOpenChange={setDrawerOpen}>
                     <DrawerTrigger asChild>
-                          <Button className="w-full h-14 text-lg shadow-lg">
+                          <Button className="w-full h-16 text-lg shadow-lg">
                             <div className="flex items-center justify-between w-full">
                                 <div className='flex items-center gap-2'>
                                     <ShoppingCart className="h-6 w-6" />
