@@ -20,6 +20,8 @@ import {
   CreditCard,
   Landmark,
   Receipt,
+  FileText,
+  Wallet,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -117,6 +119,7 @@ const navItems = [
     icon: Landmark,
     subItems: [
       { href: '/accounting/dashboard', label: 'Dashboard' },
+      { href: '/accounting/payments', label: 'Payments' },
       { href: '/accounting/expenses', label: 'Expenses' },
       { href: '/accounting/chart-of-accounts', label: 'Chart of Accounts' },
       { href: '/accounting/journal-entries', label: 'Journal Entries' },

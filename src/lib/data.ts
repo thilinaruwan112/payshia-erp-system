@@ -13,6 +13,7 @@ import { plans } from '@/lib/mock-data/plans';
 import { chartOfAccounts } from '@/lib/mock-data/chart-of-accounts';
 import { journalEntries } from '@/lib/mock-data/journal-entries';
 import { expenses } from '@/lib/mock-data/expenses';
+import { payments } from '@/lib/mock-data/payments';
 
 
 export * from '@/lib/types';
@@ -32,4 +33,5 @@ export {
     chartOfAccounts,
     journalEntries,
     expenses,
+    payments,
 }

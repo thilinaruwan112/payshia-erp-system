@@ -139,3 +139,14 @@ export type Expense = {
     paymentAccountId: number;
     paymentAccountName: string;
 };
+
+export type Payment = {
+    id: string;
+    date: string;
+    supplierId: string;
+    supplierName: string;
+    poId?: string;
+    amount: number;
+    paymentAccountId: number;
+    paymentAccountName: string;
+};

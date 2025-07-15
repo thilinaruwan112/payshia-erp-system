@@ -23,6 +23,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
@@ -112,6 +113,12 @@ export default function PurchaseOrdersPage() {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>View Details</DropdownMenuItem>
                         <DropdownMenuItem>Create GRN</DropdownMenuItem>
+                         <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                           <Link href={`/accounting/payments/new?poId=${po.id}&supplierId=${po.supplierId}&amount=${po.total}`}>
+                            Record Payment
+                           </Link>
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
