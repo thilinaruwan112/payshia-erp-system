@@ -5,22 +5,6 @@ import type { Plan } from './types';
 // In a real app, you'd get this from the user's session or authentication context.
 const MOCK_CURRENT_USER_PLAN_ID = 'plan-basic';
 
-/**
- * Parses the feature string to extract the limit number.
- * e.g., "Up to 1,000 Orders/mo" -> 1000
- * e.g., "10 Locations" -> 10
- */
-function getLimitFromFeature(feature: string): number {
-  if (feature.toLowerCase().startsWith('unlimited')) {
-    return Infinity;
-  }
-  const match = feature.match(/[\d,]+/);
-  return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
-}
-
-function findFeature(plan: Plan, keyword: string): string | undefined {
-    return plan.features.find(f => f.toLowerCase().includes(keyword));
-}
 
 type LimitType = 'products' | 'locations' | 'orders';
 
@@ -42,26 +26,26 @@ export async function checkPlanLimit(type: LimitType): Promise<{
 
   let limit = Infinity;
   let usage = 0;
-  let featureString: string | undefined;
 
   switch (type) {
     case 'products':
-      featureString = findFeature(currentPlan, 'product');
+      limit = currentPlan.limits.products;
       usage = products.length;
       break;
     case 'locations':
-      featureString = findFeature(currentPlan, 'location');
+      limit = currentPlan.limits.locations;
       usage = locations.length;
       break;
     case 'orders':
-       featureString = findFeature(currentPlan, 'order');
+       limit = currentPlan.limits.orders;
        // In a real app, you'd filter orders by the current month
        usage = orders.length;
        break;
   }
-
-  if (featureString) {
-      limit = getLimitFromFeature(featureString);
+  
+  // Handle "unlimited" plans where limit is Infinity or -1
+  if (limit === Infinity || limit === -1) {
+    return { hasAccess: true, limit: Infinity, usage, name: currentPlan.name };
   }
 
   return {
@@ -70,4 +54,14 @@ export async function checkPlanLimit(type: LimitType): Promise<{
     usage,
     name: currentPlan.name,
   };
+}
+
+/**
+ * Checks if the user has access to a non-limit based feature.
+ */
+export async function checkFeatureAccess(featureName: string): Promise<boolean> {
+    const currentPlan = plans.find((p) => p.id === MOCK_CURRENT_USER_PLAN_ID);
+    if (!currentPlan) return false;
+
+    return currentPlan.features.some(f => f.toLowerCase().includes(featureName.toLowerCase()));
 }

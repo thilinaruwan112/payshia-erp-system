@@ -95,6 +95,11 @@ export type Plan = {
     name: string;
     description: string;
     price: number;
-    features: string[];
+    limits: {
+        orders: number;
+        products: number;
+        locations: number;
+    };
+    features: string[]; // For additional, non-limit based features
     ctaLabel: string;
 }

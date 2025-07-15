@@ -33,6 +33,11 @@ const planFormSchema = z.object({
   description: z.string().min(10, "Description is required."),
   price: z.coerce.number().min(0, "Price must be a positive number."),
   ctaLabel: z.string().min(3, "CTA label is required."),
+  limits: z.object({
+      orders: z.coerce.number().min(0, "Must be a positive number."),
+      products: z.coerce.number().min(0, "Must be a positive number."),
+      locations: z.coerce.number().min(0, "Must be a positive number."),
+  }),
   features: z.array(z.object({ value: z.string().min(3, "Feature cannot be empty.") })),
 });
 
@@ -51,7 +56,13 @@ export function PlanForm({ plan }: PlanFormProps) {
     description: plan?.description || "",
     price: plan?.price,
     ctaLabel: plan?.ctaLabel || "",
-    features: plan?.features.map(f => ({ value: f })) || [{ value: "" }],
+    limits: {
+        orders: plan?.limits.orders === Infinity ? -1 : plan?.limits.orders || 0,
+        products: plan?.limits.products === Infinity ? -1 : plan?.limits.products || 0,
+        locations: plan?.limits.locations === Infinity ? -1 : plan?.limits.locations || 0,
+    },
+    // Filter out generated features from the form display
+    features: plan?.features.filter(f => !f.toLowerCase().includes(' up to ') && !f.toLowerCase().includes(' location')).map(f => ({ value: f })) || [{ value: "" }],
   };
 
   const form = useForm<PlanFormValues>({
@@ -66,6 +77,7 @@ export function PlanForm({ plan }: PlanFormProps) {
   });
 
   function onSubmit(data: PlanFormValues) {
+    // A real implementation would save this to a database
     console.log(data);
     toast({
       title: plan ? "Plan Updated" : "Plan Created",
@@ -92,75 +104,125 @@ export function PlanForm({ plan }: PlanFormProps) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <Card className="lg:col-span-2">
-                <CardHeader>
-                    <CardTitle>Plan Details</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Plan Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="e.g. Pro Plan" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                     <FormField
-                        control={form.control}
-                        name="price"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Price (/month)</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="e.g. 79" {...field} startIcon="$" />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <div className="md:col-span-2">
+            <div className="lg:col-span-2 space-y-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Plan Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
                             control={form.control}
-                            name="description"
+                            name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Description</FormLabel>
+                                <FormLabel>Plan Name</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="A short description of the plan." {...field} />
+                                    <Input placeholder="e.g. Pro Plan" {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
                             )}
                         />
-                    </div>
-                     <div className="md:col-span-2">
                         <FormField
                             control={form.control}
-                            name="ctaLabel"
+                            name="price"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>CTA Button Label</FormLabel>
+                                <FormLabel>Price (/month)</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Upgrade to Pro" {...field} />
+                                    <Input type="number" placeholder="e.g. 79" {...field} startIcon="$" />
                                 </FormControl>
-                                <FormDescription>The text on the call-to-action button.</FormDescription>
                                 <FormMessage />
                                 </FormItem>
                             )}
                         />
-                    </div>
-                </CardContent>
-            </Card>
+                        <div className="md:col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="A short description of the plan." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="ctaLabel"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>CTA Button Label</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="e.g. Upgrade to Pro" {...field} />
+                                    </FormControl>
+                                    <FormDescription>The text on the call-to-action button.</FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Plan Limits</CardTitle>
+                        <CardDescription>Set the numeric limits for this plan. Use -1 for unlimited.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <FormField
+                            control={form.control}
+                            name="limits.products"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Product Limit</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="e.g. 500" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="limits.locations"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Location Limit</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="e.g. 2" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="limits.orders"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Order Limit (/mo)</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" placeholder="e.g. 1000" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
+
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Features</CardTitle>
-                    <CardDescription>List the features included in this plan.</CardDescription>
+                    <CardTitle>Additional Features</CardTitle>
+                    <CardDescription>List any other marketing points or features for this plan.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {fields.map((field, index) => (
@@ -171,7 +233,7 @@ export function PlanForm({ plan }: PlanFormProps) {
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                     <FormControl>
-                                        <Input placeholder="e.g. Up to 10,000 Products" {...field} />
+                                        <Input placeholder="e.g. Priority Support" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                     </FormItem>

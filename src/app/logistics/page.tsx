@@ -24,16 +24,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { getLogisticsSuggestion } from './actions';
 import { BotMessageSquare, Loader2, Send, Zap } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { plans } from '@/lib/data';
 import Link from 'next/link';
+import { checkFeatureAccess } from '@/lib/plan-limits';
+import { useEffect, useState } from 'react';
 
 const initialState = {
   suggestion: '',
   error: '',
 };
-
-// Mock the current user's plan. In a real app, this would come from user authentication.
-const currentUserPlanId = 'plan-basic';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -70,9 +68,20 @@ function UpgradePrompt() {
 
 export default function LogisticsPage() {
   const [state, formAction] = useFormState(getLogisticsSuggestion, initialState);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
-  const currentUserPlan = plans.find(p => p.id === currentUserPlanId);
-  const hasAccess = currentUserPlan?.features.includes('AI Logistics Assistant') ?? false;
+  useEffect(() => {
+    checkFeatureAccess('ai logistics').then(setHasAccess);
+  }, []);
+
+
+  if (hasAccess === null) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
