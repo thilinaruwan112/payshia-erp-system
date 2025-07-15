@@ -20,6 +20,8 @@ interface OrderPanelProps {
   onUpdateQuantity: (productId: string, newQuantity: number) => void;
   onRemoveItem: (productId: string) => void;
   onClearCart: () => void;
+  isDrawer?: boolean;
+  onClose?: () => void;
 }
 
 export function OrderPanel({
@@ -27,6 +29,8 @@ export function OrderPanel({
   onUpdateQuantity,
   onRemoveItem,
   onClearCart,
+  isDrawer,
+  onClose,
 }: OrderPanelProps) {
   const { toast } = useToast();
 
@@ -48,8 +52,13 @@ export function OrderPanel({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b border-border">
+      <div className="p-4 border-b border-border flex items-center justify-between">
         <h2 className="text-xl font-bold">Current Order</h2>
+        {isDrawer && (
+             <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-5 w-5" />
+            </Button>
+        )}
       </div>
 
       <ScrollArea className="flex-1">
