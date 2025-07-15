@@ -223,7 +223,7 @@ export function OrderPanel({
             <p>Your cart is empty. Select a product to get started.</p>
           </div>
         ) : (
-          <ScrollArea className="h-full max-h-[calc(100vh-450px)] lg:max-h-[calc(100vh-480px)] xl:max-h-[calc(100vh-450px)]">
+          <ScrollArea className="h-full max-h-[calc(100vh-570px)]">
             <div className="divide-y divide-border">
               {cart.map((item) => (
                 <div key={item.product.id} className="p-4 flex gap-4">
