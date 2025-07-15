@@ -12,6 +12,7 @@ import { users } from '@/lib/mock-data/users';
 import { plans } from '@/lib/mock-data/plans';
 import { chartOfAccounts } from '@/lib/mock-data/chart-of-accounts';
 import { journalEntries } from '@/lib/mock-data/journal-entries';
+import { expenses } from '@/lib/mock-data/expenses';
 
 
 export * from '@/lib/types';
@@ -30,4 +31,5 @@ export {
     plans,
     chartOfAccounts,
     journalEntries,
+    expenses,
 }

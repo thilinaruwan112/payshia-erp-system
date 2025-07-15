@@ -128,3 +128,14 @@ export type JournalEntry = {
         credit: number;
     }[];
 };
+
+export type Expense = {
+    id: string;
+    date: string;
+    payee: string;
+    amount: number;
+    expenseAccountId: number;
+    expenseAccountName: string;
+    paymentAccountId: number;
+    paymentAccountName: string;
+};
