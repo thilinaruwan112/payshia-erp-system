@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { Minus, Plus } from 'lucide-react';
+import { Delete } from 'lucide-react';
 
 interface AddToCartDialogProps {
   product: Product | null;
@@ -27,19 +27,42 @@ export function AddToCartDialog({
   onClose,
   onAddToCart,
 }: AddToCartDialogProps) {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState('1');
   const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
     if (product) {
-      setQuantity(1);
+      setQuantity('1');
       setDiscount(0);
     }
   }, [product]);
 
   const handleAddToCart = () => {
     if (product) {
-      onAddToCart(product, quantity, discount);
+      const numQuantity = parseInt(quantity, 10);
+      if (numQuantity > 0) {
+        onAddToCart(product, numQuantity, discount);
+      }
+    }
+  };
+
+  const handleQuantityButtonClick = (value: string) => {
+    if (quantity === '0' || quantity === '1') {
+      setQuantity(value);
+    } else {
+      setQuantity(quantity + value);
+    }
+  };
+
+  const handleClear = () => {
+    setQuantity('1');
+  };
+  
+  const handleDelete = () => {
+    if (quantity.length > 1) {
+        setQuantity(quantity.slice(0, -1));
+    } else {
+        setQuantity('1');
     }
   };
 
@@ -70,33 +93,20 @@ export function AddToCartDialog({
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="space-y-2">
-                  <Label htmlFor="quantity">Quantity</Label>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                      className="w-20 text-center"
-                      min="1"
-                    />
-                     <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
+                    <Label htmlFor="quantity">Quantity</Label>
+                    <div className="flex items-center gap-2 rounded-md border p-2 justify-center text-2xl font-bold h-11">
+                        {quantity}
+                    </div>
+                     <div className="grid grid-cols-3 gap-2">
+                        {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
+                            <Button key={num} variant="outline" type="button" onClick={() => handleQuantityButtonClick(num)}>
+                                {num}
+                            </Button>
+                        ))}
+                         <Button variant="outline" type="button" onClick={handleClear}>C</Button>
+                        <Button variant="outline" type="button" onClick={() => handleQuantityButtonClick('0')}>0</Button>
+                         <Button variant="outline" type="button" onClick={handleDelete}><Delete className="h-5 w-5" /></Button>
+                    </div>
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="discount">Item Discount ($)</Label>
@@ -115,7 +125,7 @@ export function AddToCartDialog({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button onClick={handleAddToCart}>Add to Order</Button>
+              <Button onClick={handleAddToCart} disabled={!quantity || parseInt(quantity) <= 0}>Add to Order</Button>
             </DialogFooter>
           </>
         )}
