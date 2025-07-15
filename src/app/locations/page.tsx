@@ -15,7 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Star } from 'lucide-react';
 import { locations } from '@/lib/data';
 import Link from 'next/link';
 import {
@@ -26,18 +26,22 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { checkPlanLimit } from '@/lib/plan-limits';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export default function LocationsPage() {
+export default async function LocationsPage() {
+  const { hasAccess, limit, usage, name } = await checkPlanLimit('locations');
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Locations</h1>
           <p className="text-muted-foreground">
-            Manage your warehouses, stores, and other stock locations.
+            Manage your warehouses, stores, and other stock locations. You are on the <span className="font-semibold text-primary">{name}</span> plan.
           </p>
         </div>
-        <Button asChild className="w-full sm:w-auto">
+        <Button asChild className="w-full sm:w-auto" disabled={!hasAccess}>
           <Link href="/locations/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Location
@@ -45,11 +49,25 @@ export default function LocationsPage() {
         </Button>
       </div>
 
+       {!hasAccess && (
+        <Alert>
+          <Star className="h-4 w-4" />
+          <AlertTitle>Upgrade to add more locations</AlertTitle>
+          <AlertDescription>
+            You have reached the limit of {limit} locations on the {name} plan.
+            <Button asChild variant="link" className="p-0 pl-1 h-auto">
+              <Link href="/billing">Upgrade your plan</Link>
+            </Button>
+            to add more.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>All Locations</CardTitle>
           <CardDescription>
-            A list of all your business locations.
+            Showing {usage} of {limit} locations.
           </CardDescription>
         </CardHeader>
         <CardContent>
