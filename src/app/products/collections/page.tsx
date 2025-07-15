@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -14,8 +15,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { collections } from '@/lib/data';
+import Link from 'next/link';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function CollectionsPage() {
   return (
@@ -27,9 +36,11 @@ export default function CollectionsPage() {
             Group your products into collections.
           </p>
         </div>
-        <Button className="w-full sm:w-auto">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Create Collection
+        <Button asChild className="w-full sm:w-auto">
+          <Link href="/products/collections/new">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Create Collection
+          </Link>
         </Button>
       </div>
 
@@ -46,6 +57,9 @@ export default function CollectionsPage() {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead className="text-right">Product Count</TableHead>
+                <TableHead>
+                  <span className="sr-only">Actions</span>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -54,6 +68,25 @@ export default function CollectionsPage() {
                   <TableCell className="font-medium">{collection.title}</TableCell>
                   <TableCell className="text-right">
                     {collection.productCount}
+                  </TableCell>
+                   <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="icon" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem asChild>
+                           <Link href={`/products/collections/${collection.id}`}>Edit</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
