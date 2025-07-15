@@ -143,11 +143,6 @@ export function AddToCartDialog({
             <div className="p-6 bg-muted/30 flex flex-col">
               <div className="flex justify-between items-center mb-4">
                  <h3 className="text-lg font-semibold">Select Quantity</h3>
-                 <DialogClose asChild>
-                    <Button variant="ghost" size="icon">
-                        <X className="h-4 w-4" />
-                    </Button>
-                 </DialogClose>
               </div>
               <Input 
                 readOnly 
