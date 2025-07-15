@@ -3,6 +3,7 @@ import './globals.css';
 import { AppShell } from '@/components/app-shell';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'BranchBrain',
@@ -31,7 +32,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppShell>{children}</AppShell>
+          <SidebarProvider>
+            <AppShell>{children}</AppShell>
+          </SidebarProvider>
           <Toaster />
         </ThemeProvider>
       </body>

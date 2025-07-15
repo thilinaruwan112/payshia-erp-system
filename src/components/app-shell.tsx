@@ -14,7 +14,6 @@ import {
   Tag,
 } from 'lucide-react';
 import {
-  SidebarProvider,
   Sidebar,
   SidebarHeader,
   SidebarContent,
@@ -24,6 +23,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -118,9 +118,14 @@ function Brand() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    setOpenMobile(false);
+  };
 
   return (
-    <SidebarProvider>
+    <>
       <Sidebar>
         <SidebarHeader>
           <Brand />
@@ -138,7 +143,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       >
                         <item.icon className="mr-2 h-4 w-4" />
                         <span>{item.label}</span>
-                        <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform ease-in-out group-data-[state=open]:rotate-180" />
+                        <ChevronDown className="ml-auto h-4 w-4 shrink-0 transition-transform duration-200 ease-in-out group-data-[state=open]:rotate-180" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
                   </SidebarMenuItem>
@@ -146,7 +151,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <ul className="pl-7 py-1 ml-1 border-l">
                       {item.subItems.map((subItem) => (
                         <li key={subItem.href}>
-                          <Link href={subItem.href}>
+                          <Link href={subItem.href} onClick={handleLinkClick}>
                             <SidebarMenuButton
                               variant="ghost"
                               className="w-full justify-start text-muted-foreground"
@@ -171,7 +176,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     }
                     className="justify-start"
                   >
-                    <Link href={item.href!}>
+                    <Link href={item.href!} onClick={handleLinkClick}>
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.label}</span>
                       {item.label === 'AI Logistics' && (
@@ -217,6 +222,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   );
 }
