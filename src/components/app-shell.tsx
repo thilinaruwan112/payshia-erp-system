@@ -14,6 +14,7 @@ import {
   Users,
   Building,
   ArrowRightLeft,
+  Warehouse,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -89,6 +90,11 @@ const navItems = [
     href: '/transfers',
     label: 'Stock Transfers',
     icon: ArrowRightLeft,
+  },
+  {
+    href: '/locations',
+    label: 'Locations',
+    icon: Warehouse,
   },
   {
     href: '/logistics',
