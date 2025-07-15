@@ -37,6 +37,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Combobox } from "./ui/combobox";
 
 const expenseFormSchema = z.object({
   date: z.date({
@@ -54,9 +55,10 @@ type ExpenseFormValues = z.infer<typeof expenseFormSchema>;
 interface ExpenseFormProps {
     expenseAccounts: Account[];
     paymentAccounts: Account[];
+    payees: string[];
 }
 
-export function ExpenseForm({ expenseAccounts, paymentAccounts }: ExpenseFormProps) {
+export function ExpenseForm({ expenseAccounts, paymentAccounts, payees }: ExpenseFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   
@@ -81,6 +83,8 @@ export function ExpenseForm({ expenseAccounts, paymentAccounts }: ExpenseFormPro
     });
     router.push('/accounting/expenses');
   }
+
+  const payeeOptions = payees.map(payee => ({ value: payee, label: payee }));
 
   return (
     <Form {...form}>
@@ -147,12 +151,16 @@ export function ExpenseForm({ expenseAccounts, paymentAccounts }: ExpenseFormPro
                     control={form.control}
                     name="payee"
                     render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Payee</FormLabel>
-                        <FormControl>
-                            <Input placeholder="e.g., City Power & Light" {...field} />
-                        </FormControl>
-                         <FormMessage />
+                        <FormItem className="flex flex-col">
+                            <FormLabel>Payee</FormLabel>
+                            <Combobox
+                                options={payeeOptions}
+                                value={field.value}
+                                onChange={field.onChange}
+                                placeholder="Select or create a payee..."
+                                notFoundText="No payee found. You can create a new one."
+                            />
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
