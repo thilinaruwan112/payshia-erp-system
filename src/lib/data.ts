@@ -14,6 +14,7 @@ export type Location = {
   id: string;
   name: string;
   type: 'Warehouse' | 'Store';
+  salesChannels: ('E-commerce' | 'Retail' | 'Wholesale' | 'POS')[];
 };
 
 export type InventoryItem = {
@@ -96,9 +97,9 @@ export const collections: Collection[] = [
 ];
 
 export const locations: Location[] = [
-  { id: 'loc-1', name: 'Main Warehouse', type: 'Warehouse' },
-  { id: 'loc-2', name: 'Downtown Store', type: 'Store' },
-  { id: 'loc-3', name: 'Uptown Store', type: 'Store' },
+  { id: 'loc-1', name: 'Main Warehouse', type: 'Warehouse', salesChannels: ['Wholesale'] },
+  { id: 'loc-2', name: 'Downtown Store', type: 'Store', salesChannels: ['POS', 'Retail'] },
+  { id: 'loc-3', name: 'Uptown Store', type: 'Store', salesChannels: ['POS', 'Retail', 'E-commerce'] },
 ];
 
 export const products: Product[] = [

@@ -57,7 +57,8 @@ export default function LocationsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead className="hidden sm:table-cell">Type</TableHead>
+                <TableHead>Sales Channels</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -66,9 +67,19 @@ export default function LocationsPage() {
             <TableBody>
               {locations.map((location) => (
                 <TableRow key={location.id}>
-                  <TableCell className="font-medium">{location.name}</TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium">
+                    {location.name}
+                    <div className="block sm:hidden text-muted-foreground text-sm">{location.type}</div>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge variant="outline">{location.type}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {location.salesChannels.map(channel => (
+                        <Badge key={channel} variant="secondary">{channel}</Badge>
+                      ))}
+                    </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
