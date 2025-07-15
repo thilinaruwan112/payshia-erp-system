@@ -217,73 +217,75 @@ export function OrderPanel({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0">
         {cart.length === 0 ? (
           <div className="flex items-center justify-center h-full text-muted-foreground p-4 text-center">
             <p>Your cart is empty. Select a product to get started.</p>
           </div>
         ) : (
-          <div className="divide-y divide-border">
-            {cart.map((item) => (
-              <div key={item.product.id} className="p-4 flex gap-4">
-                <Image
-                  src={`https://placehold.co/64x64.png`}
-                  alt={item.product.name}
-                  width={64}
-                  height={64}
-                  className="rounded-md object-cover"
-                  data-ai-hint="product photo"
-                />
-                <div className="flex-1 flex flex-col">
-                  <span className="font-semibold">{item.product.name}</span>
-                  <span className="text-muted-foreground text-sm">
-                    ${item.product.price.toFixed(2)}
-                  </span>
-                   {item.itemDiscount && item.itemDiscount > 0 ? (
-                      <span className="text-xs text-green-600">
-                        Discount: -${item.itemDiscount.toFixed(2)}
-                      </span>
-                    ) : null}
-                  <div className="flex items-center gap-2 mt-auto">
+          <ScrollArea className="h-full">
+            <div className="divide-y divide-border">
+              {cart.map((item) => (
+                <div key={item.product.id} className="p-4 flex gap-4">
+                  <Image
+                    src={`https://placehold.co/64x64.png`}
+                    alt={item.product.name}
+                    width={64}
+                    height={64}
+                    className="rounded-md object-cover"
+                    data-ai-hint="product photo"
+                  />
+                  <div className="flex-1 flex flex-col">
+                    <span className="font-semibold">{item.product.name}</span>
+                    <span className="text-muted-foreground text-sm">
+                      ${item.product.price.toFixed(2)}
+                    </span>
+                    {item.itemDiscount && item.itemDiscount > 0 ? (
+                        <span className="text-xs text-green-600">
+                          Discount: -${item.itemDiscount.toFixed(2)}
+                        </span>
+                      ) : null}
+                    <div className="flex items-center gap-2 mt-auto">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() =>
+                          onUpdateQuantity(item.product.id, item.quantity - 1)
+                        }
+                      >
+                        <MinusCircle className="h-5 w-5" />
+                      </Button>
+                      <span className="w-8 text-center text-lg font-bold">{item.quantity}</span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() =>
+                          onUpdateQuantity(item.product.id, item.quantity + 1)
+                        }
+                      >
+                        <PlusCircle className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="font-bold">
+                      ${(item.product.price * item.quantity).toFixed(2)}
+                    </span>
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="h-8 w-8"
-                      onClick={() =>
-                        onUpdateQuantity(item.product.id, item.quantity - 1)
-                      }
+                      className="h-8 w-8 mt-auto text-muted-foreground hover:text-destructive"
+                      onClick={() => onRemoveItem(item.product.id)}
                     >
-                      <MinusCircle className="h-5 w-5" />
-                    </Button>
-                    <span className="w-8 text-center text-lg font-bold">{item.quantity}</span>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-8 w-8"
-                      onClick={() =>
-                        onUpdateQuantity(item.product.id, item.quantity + 1)
-                      }
-                    >
-                      <PlusCircle className="h-5 w-5" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="font-bold">
-                    ${(item.product.price * item.quantity).toFixed(2)}
-                  </span>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 mt-auto text-muted-foreground hover:text-destructive"
-                    onClick={() => onRemoveItem(item.product.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollArea>
         )}
       </div>
 
