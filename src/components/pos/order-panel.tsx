@@ -8,13 +8,16 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
-  Trash2,
   MinusCircle,
   PlusCircle,
   X,
   CreditCard,
   TicketPercent,
   UserPlus,
+  Trash2,
+  ChefHat,
+  Notebook,
+  PlusSquare,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -37,11 +40,14 @@ interface OrderPanelProps {
   onUpdateQuantity: (productId: string, newQuantity: number) => void;
   onRemoveItem: (productId: string) => void;
   onClearCart: () => void;
+  onHoldOrder: () => void;
+  onSendToKitchen: () => void;
   isDrawer?: boolean;
   onClose?: () => void;
   discount: number;
   setDiscount: (discount: number) => void;
   customer: User;
+  orderName: string;
 }
 
 const PaymentDialog = ({
@@ -160,11 +166,14 @@ export function OrderPanel({
   onUpdateQuantity,
   onRemoveItem,
   onClearCart,
+  onHoldOrder,
+  onSendToKitchen,
   isDrawer,
   onClose,
   discount,
   setDiscount,
   customer,
+  orderName,
 }: OrderPanelProps) {
   const { toast } = useToast();
   const [isPaymentOpen, setPaymentOpen] = React.useState(false);
@@ -182,7 +191,7 @@ export function OrderPanel({
   return (
     <div className="flex flex-col h-full bg-card">
       <header className="p-4 border-b border-border flex items-center justify-between">
-        <h2 className="text-xl font-bold">Current Order</h2>
+        <h2 className="text-xl font-bold">{orderName}</h2>
         <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-muted-foreground">
                 <UserPlus className="h-5 w-5" />
@@ -293,22 +302,25 @@ export function OrderPanel({
           <span>${orderTotals.total.toFixed(2)}</span>
         </div>
         
-        <div className="flex gap-2 pt-2">
-            <Dialog open={isDiscountOpen} onOpenChange={setDiscountOpen}>
+        <div className="grid grid-cols-2 gap-2 pt-2">
+             <Dialog open={isDiscountOpen} onOpenChange={setDiscountOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline">
                   <TicketPercent className="mr-2 h-4 w-4" /> Discount
                 </Button>
               </DialogTrigger>
               <DiscountDialog setDiscount={setDiscount} onClose={() => setDiscountOpen(false)} />
             </Dialog>
+             <Button variant="outline" onClick={onHoldOrder} disabled={cart.length === 0}>
+                <Notebook className="mr-2 h-4 w-4" /> Hold
+            </Button>
             <Button
-              variant="destructive"
-              className="w-full"
-              onClick={onClearCart}
+              variant="outline"
+              onClick={onSendToKitchen}
+              className="col-span-2"
               disabled={cart.length === 0}
             >
-              <X className="mr-2 h-4 w-4" /> Clear
+              <ChefHat className="mr-2 h-4 w-4" /> Send KOT/BOT
             </Button>
         </div>
         <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
