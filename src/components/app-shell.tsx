@@ -16,6 +16,7 @@ import {
   ArrowRightLeft,
   Warehouse,
   Terminal,
+  BarChart3,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -60,6 +61,11 @@ const navItems = [
     href: '/',
     label: 'Dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    href: '/reports',
+    label: 'Reports',
+    icon: BarChart3,
   },
   {
     label: 'Products',
