@@ -1,3 +1,4 @@
+
 import { collections } from '@/lib/mock-data/collections';
 import { goodsReceivedNotes } from '@/lib/mock-data/grn';
 import { inventory } from '@/lib/mock-data/inventory';
@@ -8,6 +9,7 @@ import { purchaseOrders } from '@/lib/mock-data/purchase-orders';
 import { stockTransfers } from '@/lib/mock-data/stock-transfers';
 import { suppliers } from '@/lib/mock-data/suppliers';
 import { users } from '@/lib/mock-data/users';
+import { plans } from '@/lib/mock-data/plans';
 
 export * from '@/lib/types';
 
@@ -21,5 +23,6 @@ export {
     purchaseOrders,
     stockTransfers,
     suppliers,
-    users
+    users,
+    plans
 }

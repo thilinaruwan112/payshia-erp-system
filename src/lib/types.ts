@@ -1,3 +1,4 @@
+
 export type Product = {
   id: string;
   name: string;
@@ -87,4 +88,13 @@ export type StockTransfer = {
     date: string;
     status: 'Pending' | 'In Transit' | 'Completed';
     itemCount: number;
+}
+
+export type Plan = {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    features: string[];
+    ctaLabel: string;
 }

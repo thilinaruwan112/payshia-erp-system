@@ -17,6 +17,7 @@ import {
   Warehouse,
   Terminal,
   BarChart3,
+  CreditCard,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -103,6 +104,11 @@ const navItems = [
     label: 'Locations',
     icon: Warehouse,
   },
+   {
+    href: '/billing',
+    label: 'Billing',
+    icon: CreditCard,
+  },
   {
     href: '/logistics',
     label: 'AI Logistics',
@@ -171,8 +177,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (isExternal) {
       e.preventDefault();
       window.open(e.currentTarget.href, '_blank');
+      return;
     }
-    setOpenMobile(false);
+    // For regular links on mobile, close the sidebar after clicking.
+    if (!isExternal) {
+       setOpenMobile(false);
+    }
   };
 
   return (
@@ -202,7 +212,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <ul className="pl-7 py-1 ml-1 border-l">
                       {item.subItems.map((subItem) => (
                         <li key={subItem.href}>
-                          <Link href={subItem.href} onClick={(e) => handleLinkClick(false, e)}>
+                           <Link href={subItem.href} onClick={(e) => handleLinkClick(false, e)}>
                             <SidebarMenuButton
                               variant="ghost"
                               className="w-full justify-start text-muted-foreground"
