@@ -1,7 +1,7 @@
 'use server';
 
-import { suggestVendor, LogisticsQuerySchema } from '@/ai/flows/logistics';
-import { z } from 'zod';
+import { suggestVendor } from '@/ai/flows/logistics';
+import { LogisticsQuerySchema } from '@/ai/schemas';
 
 type FormState = {
   suggestion: string;

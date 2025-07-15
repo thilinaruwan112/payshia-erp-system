@@ -4,25 +4,12 @@
  * @fileOverview A logistics assistant AI flow.
  *
  * - suggestVendor - A function that suggests a shipping vendor based on order details.
- * - LogisticsQuerySchema - The input schema for the vendor suggestion flow.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-
-export const LogisticsQuerySchema = z.object({
-  packageDetails: z
-    .string()
-    .min(3, 'Package details must be at least 3 characters.')
-    .describe('Details of the package (e.g., dimensions, weight)'),
-  destination: z
-    .string()
-    .min(2, 'Destination must be at least 2 characters.')
-    .describe('Shipping destination'),
-  urgency: z.string().describe('How urgent the shipment is (e.g., standard, express)'),
-});
-
-export type LogisticsQuery = z.infer<typeof LogisticsQuerySchema>;
+import type { LogisticsQuery } from '@/ai/schemas';
+import { LogisticsQuerySchema } from '@/ai/schemas';
 
 const logisticsFlow = ai.defineFlow(
   {
