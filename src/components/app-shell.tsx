@@ -106,6 +106,7 @@ const navItems = [
     href: '/pos-system',
     label: 'POS System',
     icon: Terminal,
+    isExternal: true,
   },
 ];
 
@@ -160,12 +161,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
 
-  const handleLinkClick = (href: string) => {
-    if (href === '/pos-system') {
-        window.open(href, '_blank');
-    } else {
-        setOpenMobile(false);
+  const handleLinkClick = (isExternal: boolean | undefined, e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (isExternal) {
+      e.preventDefault();
+      window.open(e.currentTarget.href, '_blank');
     }
+    setOpenMobile(false);
   };
 
   return (
@@ -195,7 +196,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <ul className="pl-7 py-1 ml-1 border-l">
                       {item.subItems.map((subItem) => (
                         <li key={subItem.href}>
-                          <Link href={subItem.href} onClick={() => handleLinkClick(subItem.href)}>
+                          <Link href={subItem.href} onClick={(e) => handleLinkClick(false, e)}>
                             <SidebarMenuButton
                               variant="ghost"
                               className="w-full justify-start text-muted-foreground"
@@ -216,7 +217,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     isActive={isPathActive(pathname, item.href)}
                     className="justify-start"
                   >
-                    <Link href={item.href!} onClick={() => handleLinkClick(item.href!)}>
+                    <Link href={item.href!} onClick={(e) => handleLinkClick(item.isExternal, e)}>
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.label}</span>
                       {item.label === 'AI Logistics' && (
