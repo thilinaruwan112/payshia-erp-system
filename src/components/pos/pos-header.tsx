@@ -91,7 +91,7 @@ export function PosHeader({
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href="/">
+                    <Link href="/dashboard" target="_blank" rel="noopener noreferrer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         <span>Admin Dashboard</span>
                     </Link>
