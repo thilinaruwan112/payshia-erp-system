@@ -1,3 +1,4 @@
+
 import type { Supplier } from '@/lib/types';
 
 export const suppliers: Supplier[] = [

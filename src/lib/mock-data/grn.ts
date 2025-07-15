@@ -1,3 +1,4 @@
+
 import type { GoodsReceivedNote } from '@/lib/types';
 
 export const goodsReceivedNotes: GoodsReceivedNote[] = [
