@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -22,9 +23,11 @@ import {
   AlertTriangle,
   PlusCircle,
   Warehouse,
+  TerminalSquare,
 } from 'lucide-react';
 import { inventory, locations, products } from '@/lib/data';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const lowStockItems = inventory.filter(
@@ -95,6 +98,21 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+       <Link href="/pos-system" target="_blank" rel="noopener noreferrer">
+        <Card className="hover:border-primary transition-colors cursor-pointer">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Point of Sale (POS)</CardTitle>
+            <TerminalSquare className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground">
+              Click here to launch the POS terminal for in-person sales.
+            </p>
+          </CardContent>
+        </Card>
+       </Link>
+
       <Card>
         <CardHeader>
           <CardTitle>Stock Levels</CardTitle>
@@ -103,82 +121,84 @@ export default function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead className="hidden sm:table-cell">SKU</TableHead>
-                {locations.map((loc) => (
-                  <TableHead key={loc.id} className="text-center hidden md:table-cell">
-                    {loc.name}
-                  </TableHead>
-                ))}
-                <TableHead className="text-center">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.flatMap((product) =>
-                product.variants.map((variant) => {
-                  const inventoryItems = inventory.filter(
-                    (item) => item.sku === variant.sku
-                  );
-                  const totalVariantStock = inventoryItems.reduce(
-                    (sum, item) => sum + item.stock,
-                    0
-                  );
-                  const reorderLevel = inventoryItems[0]?.reorderLevel ?? 0;
-                  const status =
-                    totalVariantStock === 0
-                      ? 'out-of-stock'
-                      : totalVariantStock <= reorderLevel
-                      ? 'low-stock'
-                      : 'in-stock';
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead className="hidden sm:table-cell">SKU</TableHead>
+                  {locations.map((loc) => (
+                    <TableHead key={loc.id} className="text-center hidden md:table-cell">
+                      {loc.name}
+                    </TableHead>
+                  ))}
+                  <TableHead className="text-center">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {products.flatMap((product) =>
+                  product.variants.map((variant) => {
+                    const inventoryItems = inventory.filter(
+                      (item) => item.sku === variant.sku
+                    );
+                    const totalVariantStock = inventoryItems.reduce(
+                      (sum, item) => sum + item.stock,
+                      0
+                    );
+                    const reorderLevel = inventoryItems[0]?.reorderLevel ?? 0;
+                    const status =
+                      totalVariantStock === 0
+                        ? 'out-of-stock'
+                        : totalVariantStock <= reorderLevel
+                        ? 'low-stock'
+                        : 'in-stock';
 
-                  return (
-                    <TableRow key={variant.sku}>
-                      <TableCell className="font-medium">
-                        <div>{product.name}</div>
-                        {(variant.color || variant.size) && (
-                          <div className="text-muted-foreground text-xs">
-                            {[variant.color, variant.size].filter(Boolean).join(' / ')}
-                          </div>
-                        )}
-                         <div className="sm:hidden text-xs text-muted-foreground">{variant.sku}</div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">{variant.sku}</TableCell>
-                      {locations.map((loc) => {
-                        const item = inventoryItems.find(
-                          (i) => i.locationId === loc.id
-                        );
-                        return (
-                          <TableCell key={loc.id} className="text-center hidden md:table-cell">
-                            {item?.stock ?? 0}
-                          </TableCell>
-                        );
-                      })}
-                      <TableCell className="text-center">
-                        <Badge
-                          variant={
-                            status === 'in-stock'
-                              ? 'secondary'
-                              : 'destructive'
-                          }
-                          className={cn(
-                            'capitalize',
-                            status === 'in-stock' && 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
-                            status === 'low-stock' && 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200',
-                            status === 'out-of-stock' && 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                    return (
+                      <TableRow key={variant.sku}>
+                        <TableCell className="font-medium">
+                          <div>{product.name}</div>
+                          {(variant.color || variant.size) && (
+                            <div className="text-muted-foreground text-xs">
+                              {[variant.color, variant.size].filter(Boolean).join(' / ')}
+                            </div>
                           )}
-                        >
-                          {status.replace('-', ' ')}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
+                           <div className="sm:hidden text-xs text-muted-foreground">{variant.sku}</div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">{variant.sku}</TableCell>
+                        {locations.map((loc) => {
+                          const item = inventoryItems.find(
+                            (i) => i.locationId === loc.id
+                          );
+                          return (
+                            <TableCell key={loc.id} className="text-center hidden md:table-cell">
+                              {item?.stock ?? 0}
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell className="text-center">
+                          <Badge
+                            variant={
+                              status === 'in-stock'
+                                ? 'secondary'
+                                : 'destructive'
+                            }
+                            className={cn(
+                              'capitalize',
+                              status === 'in-stock' && 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+                              status === 'low-stock' && 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200',
+                              status === 'out-of-stock' && 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                            )}
+                          >
+                            {status.replace('-', ' ')}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
