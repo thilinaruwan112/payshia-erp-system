@@ -46,67 +46,67 @@ import { orders, inventory, products, users } from '@/lib/data';
 import { addDays, format, isAfter, subDays } from 'date-fns';
 import { useMemo } from 'react';
 
-// Sales Data Processing
-const salesData = useMemo(() => {
-  const sevenDaysAgo = subDays(new Date(), 7);
-  const relevantOrders = orders.filter((order) =>
-    isAfter(new Date(order.date), sevenDaysAgo)
-  );
-
-  const dailySales = new Map<string, number>();
-  for (let i = 0; i < 7; i++) {
-    const date = format(addDays(sevenDaysAgo, i + 1), 'yyyy-MM-dd');
-    dailySales.set(date, 0);
-  }
-
-  relevantOrders.forEach((order) => {
-    if (order.status !== 'Cancelled') {
-      const date = format(new Date(order.date), 'yyyy-MM-dd');
-      dailySales.set(date, (dailySales.get(date) || 0) + order.total);
-    }
-  });
-
-  return Array.from(dailySales.entries()).map(([date, total]) => ({
-    name: format(new Date(date), 'MMM d'),
-    total,
-  }));
-}, []);
-
-const totalRevenue = orders
-  .filter((o) => o.status !== 'Cancelled')
-  .reduce((acc, order) => acc + order.total, 0);
-const totalOrders = orders.filter((o) => o.status !== 'Cancelled').length;
-
-// Inventory Data Processing
-const lowStockItems = inventory.filter(
-  (item) => item.stock > 0 && item.stock <= item.reorderLevel
-);
-const outOfStockItems = inventory.filter((item) => item.stock === 0);
-const mostStockedItems = [...inventory]
-  .sort((a, b) => b.stock - a.stock)
-  .slice(0, 5);
-
-// Customer Data Processing
-const newCustomers = users.filter((u) => u.role === 'Customer').slice(0, 5); // Mock data
-const topCustomers = [...orders]
-  .reduce((acc, order) => {
-    const existing = acc.find((c) => c.name === order.customerName);
-    if (existing) {
-      existing.totalSpent += order.total;
-      existing.orderCount += 1;
-    } else {
-      acc.push({
-        name: order.customerName,
-        totalSpent: order.total,
-        orderCount: 1,
-      });
-    }
-    return acc;
-  }, [] as { name: string; totalSpent: number; orderCount: number }[])
-  .sort((a, b) => b.totalSpent - a.totalSpent)
-  .slice(0, 5);
-
 export default function ReportsPage() {
+  // Sales Data Processing
+  const salesData = useMemo(() => {
+    const sevenDaysAgo = subDays(new Date(), 7);
+    const relevantOrders = orders.filter((order) =>
+      isAfter(new Date(order.date), sevenDaysAgo)
+    );
+
+    const dailySales = new Map<string, number>();
+    for (let i = 0; i < 7; i++) {
+      const date = format(addDays(sevenDaysAgo, i + 1), 'yyyy-MM-dd');
+      dailySales.set(date, 0);
+    }
+
+    relevantOrders.forEach((order) => {
+      if (order.status !== 'Cancelled') {
+        const date = format(new Date(order.date), 'yyyy-MM-dd');
+        dailySales.set(date, (dailySales.get(date) || 0) + order.total);
+      }
+    });
+
+    return Array.from(dailySales.entries()).map(([date, total]) => ({
+      name: format(new Date(date), 'MMM d'),
+      total,
+    }));
+  }, []);
+
+  const totalRevenue = orders
+    .filter((o) => o.status !== 'Cancelled')
+    .reduce((acc, order) => acc + order.total, 0);
+  const totalOrders = orders.filter((o) => o.status !== 'Cancelled').length;
+
+  // Inventory Data Processing
+  const lowStockItems = inventory.filter(
+    (item) => item.stock > 0 && item.stock <= item.reorderLevel
+  );
+  const outOfStockItems = inventory.filter((item) => item.stock === 0);
+  const mostStockedItems = [...inventory]
+    .sort((a, b) => b.stock - a.stock)
+    .slice(0, 5);
+
+  // Customer Data Processing
+  const newCustomers = users.filter((u) => u.role === 'Customer').slice(0, 5); // Mock data
+  const topCustomers = [...orders]
+    .reduce((acc, order) => {
+      const existing = acc.find((c) => c.name === order.customerName);
+      if (existing) {
+        existing.totalSpent += order.total;
+        existing.orderCount += 1;
+      } else {
+        acc.push({
+          name: order.customerName,
+          totalSpent: order.total,
+          orderCount: 1,
+        });
+      }
+      return acc;
+    }, [] as { name: string; totalSpent: number; orderCount: number }[])
+    .sort((a, b) => b.totalSpent - a.totalSpent)
+    .slice(0, 5);
+    
   return (
     <div className="flex flex-col gap-6">
       <div>
