@@ -46,6 +46,47 @@ export type Collection = {
   productCount: number;
 };
 
+export type Supplier = {
+    id: string;
+    name: string;
+    contactPerson: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+export type PurchaseOrder = {
+    id: string;
+    supplierId: string;
+    supplierName: string;
+    date: string;
+    expectedDelivery: string;
+    status: 'Draft' | 'Sent' | 'Partial' | 'Received' | 'Cancelled';
+    total: number;
+    itemCount: number;
+}
+
+export type GoodsReceivedNote = {
+    id: string;
+    poId: string;
+    supplierName: string;
+    receivedDate: string;
+    locationId: string;
+    locationName: string;
+    itemCount: number;
+}
+
+export type StockTransfer = {
+    id: string;
+    fromLocationId: string;
+    fromLocationName: string;
+    toLocationId: string;
+    toLocationName: string;
+    date: string;
+    status: 'Pending' | 'In Transit' | 'Completed';
+    itemCount: number;
+}
+
 
 export const collections: Collection[] = [
     { id: 'col-1', title: 'Summer Collection', productCount: 12 },
@@ -157,4 +198,25 @@ export const orders: Order[] = [
         total: 24.99,
         items: [{ sku: 'TS-WHT-M', quantity: 1 }],
     }
+];
+
+export const suppliers: Supplier[] = [
+    { id: 'sup-1', name: 'Global Textiles Inc.', contactPerson: 'Sarah Chen', email: 'sarah.chen@globaltextiles.com', phone: '123-456-7890', address: '123 Textile Ave, Industry City, 10001' },
+    { id: 'sup-2', name: 'Gadget Masters', contactPerson: 'Mike Rivera', email: 'mike.r@gadgetmasters.net', phone: '987-654-3210', address: '456 Tech Park, Silicon Valley, 94025' },
+    { id: 'sup-3', name: 'Home Essentials Co.', contactPerson: 'Emily White', email: 'emily@homeessentials.co', phone: '555-123-4567', address: '789 Decor St, Crafton, 54321' },
+];
+
+export const purchaseOrders: PurchaseOrder[] = [
+    { id: 'PO-001', supplierId: 'sup-1', supplierName: 'Global Textiles Inc.', date: '2023-11-01', expectedDelivery: '2023-11-15', status: 'Received', total: 5250.00, itemCount: 2 },
+    { id: 'PO-002', supplierId: 'sup-2', supplierName: 'Gadget Masters', date: '2023-11-05', expectedDelivery: '2023-11-20', status: 'Sent', total: 10000.00, itemCount: 1 },
+    { id: 'PO-003', supplierId: 'sup-3', supplierName: 'Home Essentials Co.', date: '2023-11-10', expectedDelivery: '2023-11-25', status: 'Draft', total: 3000.00, itemCount: 3 },
+];
+
+export const goodsReceivedNotes: GoodsReceivedNote[] = [
+    { id: 'GRN-001', poId: 'PO-001', supplierName: 'Global Textiles Inc.', receivedDate: '2023-11-14', locationId: 'loc-1', locationName: 'Main Warehouse', itemCount: 2 },
+];
+
+export const stockTransfers: StockTransfer[] = [
+    { id: 'ST-001', fromLocationId: 'loc-1', fromLocationName: 'Main Warehouse', toLocationId: 'loc-2', toLocationName: 'Downtown Store', date: '2023-11-10', status: 'Completed', itemCount: 50 },
+    { id: 'ST-002', fromLocationId: 'loc-1', fromLocationName: 'Main Warehouse', toLocationId: 'loc-3', toLocationName: 'Uptown Store', date: '2023-11-12', status: 'In Transit', itemCount: 30 },
 ];

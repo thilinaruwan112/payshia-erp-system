@@ -11,7 +11,9 @@ import {
   Truck,
   BotMessageSquare,
   ChevronDown,
-  Tag,
+  Users,
+  Building,
+  ArrowRightLeft,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -71,6 +73,24 @@ const navItems = [
     icon: ShoppingCart,
   },
   {
+    href: '/suppliers',
+    label: 'Suppliers',
+    icon: Users,
+  },
+   {
+    label: 'Purchasing',
+    icon: Building,
+    subItems: [
+      { href: '/purchasing/purchase-orders', label: 'Purchase Orders' },
+      { href: '/purchasing/grn', label: 'GRN' },
+    ],
+  },
+  {
+    href: '/transfers',
+    label: 'Stock Transfers',
+    icon: ArrowRightLeft,
+  },
+  {
     href: '/logistics',
     label: 'AI Logistics',
     icon: BotMessageSquare,
@@ -116,6 +136,14 @@ function Brand() {
   );
 }
 
+const isPathActive = (pathname: string, href?: string, subItems?: { href: string }[]) => {
+  if (!href && subItems) {
+    return subItems.some(item => pathname.startsWith(item.href));
+  }
+  if (!href) return false;
+  return href === '/' ? pathname === href : pathname.startsWith(href);
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
@@ -134,7 +162,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <SidebarMenu>
             {navItems.map((item, index) =>
               item.subItems ? (
-                <Collapsible key={index} defaultOpen={pathname.startsWith('/products')}>
+                <Collapsible key={index} defaultOpen={isPathActive(pathname, item.href, item.subItems)}>
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
@@ -169,11 +197,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild
-                    isActive={
-                      item.href === '/'
-                        ? pathname === item.href
-                        : pathname.startsWith(item.href!)
-                    }
+                    isActive={isPathActive(pathname, item.href)}
                     className="justify-start"
                   >
                     <Link href={item.href!} onClick={handleLinkClick}>
