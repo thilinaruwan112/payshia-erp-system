@@ -14,4 +14,6 @@ export const chartOfAccounts: Account[] = [
     { code: 5010, name: 'Cost of Goods Sold', type: 'Expense', subType: 'Operating Expense', balance: 98200.00 },
     { code: 6100, name: 'Rent Expense', type: 'Expense', subType: 'General Expense', balance: 24000.00 },
     { code: 6200, name: 'Salaries and Wages', type: 'Expense', subType: 'General Expense', balance: 48000.00 },
+    { code: 6300, name: 'Utilities Expense', type: 'Expense', subType: 'General Expense', balance: 5500.00 },
+    { code: 6400, name: 'Office Supplies', type: 'Expense', subType: 'General Expense', balance: 2300.00 },
 ];

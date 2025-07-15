@@ -15,17 +15,28 @@ export const journalEntries: JournalEntry[] = [
     },
     {
         id: 'JE-002',
-        date: '2023-11-29',
-        narration: 'To record office supplies purchase on credit',
-        totalDebit: 550.00,
-        totalCredit: 550.00,
+        date: '2023-11-15',
+        narration: 'To record receipt of goods from PO-001',
+        totalDebit: 5250.00,
+        totalCredit: 5250.00,
         lines: [
-            { accountCode: 6300, accountName: 'Office Supplies Expense', debit: 550.00, credit: 0 }, // Assume 6300 exists
-            { accountCode: 2010, accountName: 'Accounts Payable', debit: 0, credit: 550.00 },
+            { accountCode: 1400, accountName: 'Inventory', debit: 5250.00, credit: 0 },
+            { accountCode: 2010, accountName: 'Accounts Payable', debit: 0, credit: 5250.00 },
         ]
     },
      {
         id: 'JE-003',
+        date: '2023-11-25',
+        narration: 'Payment to Global Textiles Inc. for PO-001',
+        totalDebit: 5250.00,
+        totalCredit: 5250.00,
+        lines: [
+            { accountCode: 2010, accountName: 'Accounts Payable', debit: 5250.00, credit: 0 },
+            { accountCode: 1010, accountName: 'Cash and Bank', debit: 0, credit: 5250.00 },
+        ]
+    },
+    {
+        id: 'JE-004',
         date: '2023-11-30',
         narration: 'Owner investment into the business',
         totalDebit: 25000.00,
