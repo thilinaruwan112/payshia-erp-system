@@ -18,6 +18,7 @@ import {
   Terminal,
   BarChart3,
   CreditCard,
+  Landmark,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -49,6 +50,7 @@ import {
 } from '@/components/ui/collapsible';
 import React from 'react';
 import { ThemeToggle } from './theme-toggle';
+import { SheetTitle } from './ui/sheet';
 
 const user = {
   name: 'Admin User',
@@ -108,6 +110,15 @@ const navItems = [
     href: '/billing',
     label: 'Billing',
     icon: CreditCard,
+  },
+  {
+    label: 'Accounting',
+    icon: Landmark,
+    subItems: [
+      { href: '/accounting/dashboard', label: 'Dashboard' },
+      { href: '/accounting/chart-of-accounts', label: 'Chart of Accounts' },
+      { href: '/accounting/journal-entries', label: 'Journal Entries' },
+    ],
   },
   {
     href: '/logistics',

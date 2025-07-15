@@ -10,6 +10,9 @@ import { stockTransfers } from '@/lib/mock-data/stock-transfers';
 import { suppliers } from '@/lib/mock-data/suppliers';
 import { users } from '@/lib/mock-data/users';
 import { plans } from '@/lib/mock-data/plans';
+import { chartOfAccounts } from '@/lib/mock-data/chart-of-accounts';
+import { journalEntries } from '@/lib/mock-data/journal-entries';
+
 
 export * from '@/lib/types';
 
@@ -24,5 +27,7 @@ export {
     stockTransfers,
     suppliers,
     users,
-    plans
+    plans,
+    chartOfAccounts,
+    journalEntries,
 }

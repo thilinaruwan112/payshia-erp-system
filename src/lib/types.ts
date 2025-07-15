@@ -1,4 +1,5 @@
 
+
 export type Product = {
   id: string;
   name: string;
@@ -103,3 +104,27 @@ export type Plan = {
     features: string[]; // For additional, non-limit based features
     ctaLabel: string;
 }
+
+export type AccountType = 'Asset' | 'Liability' | 'Equity' | 'Revenue' | 'Expense';
+
+export type Account = {
+    code: number;
+    name: string;
+    type: AccountType;
+    subType: string;
+    balance: number;
+};
+
+export type JournalEntry = {
+    id: string;
+    date: string;
+    narration: string;
+    totalDebit: number;
+    totalCredit: number;
+    lines: {
+        accountCode: number;
+        accountName: string;
+        debit: number;
+        credit: number;
+    }[];
+};
